@@ -1,6 +1,7 @@
 package cn.futuai.open.encrypt.filter.request;
 
 import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty;
+import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty.SignVerify;
 import cn.futuai.open.encrypt.exception.ApiSignValidException;
 import cn.futuai.open.encrypt.util.ApiEncryptUtil;
 import javax.annotation.Resource;
@@ -25,14 +26,14 @@ public class RequestApiSignVerifyFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        if (!gatewayApiEncryptProperty.getEnableSignVerify()) {
+        SignVerify signVerify = gatewayApiEncryptProperty.getSign();
+        if (!signVerify.getEnable()) {
             return chain.filter(exchange);
         }
 
         ServerHttpRequest request = exchange.getRequest();
-        String url = request.getURI().getPath();
 
-        if (RequestApiFilter.isMatchUrl(url, gatewayApiEncryptProperty.getWhiteList())) {
+        if (RequestApiFilter.isPass(request, gatewayApiEncryptProperty.getCheckModel())) {
             return chain.filter(exchange);
         }
 

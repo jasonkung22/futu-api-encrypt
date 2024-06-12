@@ -1,6 +1,8 @@
 package cn.futuai.open.encrypt.filter.request;
 
 import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty;
+import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty.CheckModel;
+import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty.CheckModelEnum;
 import cn.futuai.open.encrypt.exception.ApiValidException;
 import cn.futuai.open.encrypt.util.ApiEncryptUtil;
 import cn.hutool.core.collection.CollectionUtil;
@@ -65,8 +67,7 @@ public class RequestApiFilter implements GlobalFilter, Ordered {
         }
 
         ServerHttpRequest request = exchange.getRequest();
-        String url = request.getURI().getPath();
-        if (isMatchUrl(url, gatewayApiEncryptProperty.getWhiteList())) {
+        if (isPass(request, gatewayApiEncryptProperty.getCheckModel())) {
             return chain.filter(exchange);
         }
 
@@ -160,5 +161,19 @@ public class RequestApiFilter implements GlobalFilter, Ordered {
         }
 
         return false;
+    }
+
+    public static boolean isPass(ServerHttpRequest request, CheckModel checkModel) {
+        String url = request.getURI().getPath();
+
+        boolean isPass = CheckModelEnum.WHITE_LIST.equals(checkModel.getModel())
+                && isMatchUrl(url, checkModel.getWhiteList());
+
+        if (CheckModelEnum.BLACK_LIST.equals(checkModel.getModel())
+                && !isMatchUrl(url, checkModel.getBlackList())) {
+            isPass = true;
+        }
+
+        return isPass;
     }
 }

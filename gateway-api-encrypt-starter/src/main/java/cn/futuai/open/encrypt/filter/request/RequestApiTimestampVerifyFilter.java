@@ -1,6 +1,7 @@
 package cn.futuai.open.encrypt.filter.request;
 
 import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty;
+import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty.TimestampVerify;
 import cn.futuai.open.encrypt.exception.ApiTimestampValidException;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
@@ -11,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -28,14 +28,12 @@ public class RequestApiTimestampVerifyFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        if (!gatewayApiEncryptProperty.getEnableTimestampVerify()) {
+        TimestampVerify timestampVerify = gatewayApiEncryptProperty.getTimestamp();
+        if (!timestampVerify.getEnable()) {
             return chain.filter(exchange);
         }
 
-        ServerHttpRequest request = exchange.getRequest();
-        String url = request.getURI().getPath();
-
-        if (RequestApiFilter.isMatchUrl(url, gatewayApiEncryptProperty.getWhiteList())) {
+        if (RequestApiFilter.isPass(exchange.getRequest(), gatewayApiEncryptProperty.getCheckModel())) {
             return chain.filter(exchange);
         }
 
@@ -47,7 +45,7 @@ public class RequestApiTimestampVerifyFilter implements GlobalFilter, Ordered {
             }
             long timestamp = Long.parseLong(timestampStr);
             if (DateUtil.between(new Date(timestamp), new Date(), DateUnit.SECOND)
-                    > gatewayApiEncryptProperty.getTimestampValidSecond()) {
+                    > timestampVerify.getTimestampValidSecond()) {
                 log.error("请求参数时间戳校验失败, timestamp:{}", timestamp);
                 return Mono.error(new ApiTimestampValidException());
             }

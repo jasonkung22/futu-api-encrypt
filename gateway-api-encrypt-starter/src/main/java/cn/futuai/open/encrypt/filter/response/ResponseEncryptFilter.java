@@ -1,7 +1,7 @@
 package cn.futuai.open.encrypt.filter.response;
 
 import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty;
-import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty.CheckModel;
+import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty.ResponseEncrypt;
 import cn.futuai.open.encrypt.filter.request.RequestApiFilter;
 import cn.futuai.open.encrypt.util.ApiEncryptUtil;
 import cn.hutool.core.util.StrUtil;
@@ -35,22 +35,18 @@ public class ResponseEncryptFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        if (!gatewayApiEncryptProperty.getEnableResponseEncrypt()) {
+        ResponseEncrypt responseEncrypt = gatewayApiEncryptProperty.getResponseEncrypt();
+        if (responseEncrypt == null || !responseEncrypt.getEnable()) {
             return chain.filter(exchange);
         }
 
         ServerHttpRequest request = exchange.getRequest();
-        String url = request.getURI().getPath();
 
-        boolean isNeedEncrypt = CheckModel.WHITE_LIST.equals(gatewayApiEncryptProperty.getResponseEncryptCheckModel())
-                && !RequestApiFilter.isMatchUrl(url, gatewayApiEncryptProperty.getResponseEncryptWhiteList());
-
-        if (CheckModel.BLACK_LIST.equals(gatewayApiEncryptProperty.getResponseEncryptCheckModel())
-                && RequestApiFilter.isMatchUrl(url, gatewayApiEncryptProperty.getResponseEncryptBlackList())) {
-            isNeedEncrypt = true;
+        if (RequestApiFilter.isPass(request, gatewayApiEncryptProperty.getCheckModel())) {
+            return chain.filter(exchange);
         }
 
-        if (!isNeedEncrypt) {
+        if (RequestApiFilter.isPass(request, responseEncrypt.getCheckModel())) {
             return chain.filter(exchange);
         }
 

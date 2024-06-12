@@ -1,7 +1,7 @@
 package cn.futuai.open.encrypt.filter.request;
 
 import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty;
-import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty.CheckModel;
+import cn.futuai.open.encrypt.config.property.GatewayApiEncryptProperty.RequestDecrypt;
 import cn.futuai.open.encrypt.exception.ApiDecryptException;
 import cn.futuai.open.encrypt.util.ApiEncryptUtil;
 import cn.hutool.core.util.StrUtil;
@@ -33,30 +33,20 @@ public class RequestApiDecryptFilter implements GlobalFilter, Ordered {
     @Resource
     private GatewayApiEncryptProperty gatewayApiEncryptProperty;
 
-    private static final String ENCRYPT_QUERY_STRING_KEY = "ciphertext";
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        if (!gatewayApiEncryptProperty.getEnableDecrypt()) {
+        RequestDecrypt requestDecrypt = gatewayApiEncryptProperty.getRequestDecrypt();
+        if (requestDecrypt == null || !requestDecrypt.getEnable()) {
             return chain.filter(exchange);
         }
 
         ServerHttpRequest request = exchange.getRequest();
-        String url = request.getURI().getPath();
 
-        if (RequestApiFilter.isMatchUrl(url, gatewayApiEncryptProperty.getWhiteList())) {
+        if (RequestApiFilter.isPass(request, gatewayApiEncryptProperty.getCheckModel())) {
             return chain.filter(exchange);
         }
 
-        boolean isNeedDecrypt = CheckModel.WHITE_LIST.equals(gatewayApiEncryptProperty.getRequestDecryptCheckModel())
-                && !RequestApiFilter.isMatchUrl(url, gatewayApiEncryptProperty.getRequestDecryptWhiteList());
-
-        if (CheckModel.BLACK_LIST.equals(gatewayApiEncryptProperty.getRequestDecryptCheckModel())
-                && RequestApiFilter.isMatchUrl(url, gatewayApiEncryptProperty.getRequestDecryptBlackList())) {
-            isNeedDecrypt = true;
-        }
-
-        if (!isNeedDecrypt) {
+        if (RequestApiFilter.isPass(request, requestDecrypt.getCheckModel())) {
             return chain.filter(exchange);
         }
 
@@ -99,7 +89,8 @@ public class RequestApiDecryptFilter implements GlobalFilter, Ordered {
         URI uri = request.getURI();
         String queryString = uri.getQuery();
         try {
-            if (StrUtil.isNotBlank(queryString) && queryString.contains(ENCRYPT_QUERY_STRING_KEY)) {
+            if (StrUtil.isNotBlank(queryString) && queryString.contains(
+                    gatewayApiEncryptProperty.getEncryptParamKey())) {
                 String[] split = queryString.split("=");
                 String paramValue = split[1];
                 //解密请求参数
