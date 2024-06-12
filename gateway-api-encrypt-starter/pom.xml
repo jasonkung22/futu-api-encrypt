@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <version>1.0.0</version>
 
-    <artifactId>gateway-api-encrypt-stater</artifactId>
+    <artifactId>gateway-api-encrypt-starter</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -34,5 +34,4 @@
             <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
-
 </project>
