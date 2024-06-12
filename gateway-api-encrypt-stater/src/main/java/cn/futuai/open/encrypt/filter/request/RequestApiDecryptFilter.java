@@ -44,6 +44,10 @@ public class RequestApiDecryptFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         String url = request.getURI().getPath();
 
+        if (RequestApiFilter.isMatchUrl(url, gatewayApiEncryptProperty.getWhiteList())) {
+            return chain.filter(exchange);
+        }
+
         boolean isNeedDecrypt = CheckModel.WHITE_LIST.equals(gatewayApiEncryptProperty.getRequestDecryptCheckModel())
                 && !RequestApiFilter.isMatchUrl(url, gatewayApiEncryptProperty.getRequestDecryptWhiteList());
 
