@@ -21,7 +21,7 @@ import org.springframework.web.reactive.result.view.ViewResolver;
 
 /**
  * API加密网关自动配置
- * @author gyf
+ * @author Jason Kung
  * @date 2024/06/07 15:33
  */
 @ConditionalOnProperty(name = "spring.cloud.gateway.api-encrypt.enabled", matchIfMissing = true)

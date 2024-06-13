@@ -19,7 +19,7 @@ import cn.hutool.core.lang.Assert;
 
 /**
  * 网关加密回调管理器
- * @author gyf
+ * @author Jason Kung
  * @date 2024/6/7 14:15
  */
 public final class GatewayApiInvalidCallbackManager {

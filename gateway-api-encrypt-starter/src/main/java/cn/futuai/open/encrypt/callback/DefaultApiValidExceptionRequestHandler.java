@@ -27,7 +27,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * 默认api请求异常处理器
- * @author gyf
+ * @author Jason Kung
  * @date 2024/6/7 15:05
  */
 public class DefaultApiValidExceptionRequestHandler implements ApiValidExceptionRequestHandler {

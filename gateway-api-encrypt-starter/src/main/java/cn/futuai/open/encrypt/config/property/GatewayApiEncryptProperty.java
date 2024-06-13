@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * api加密参数
- * @author gyf
+ * @author Jason Kung
  * @date 2024/06/07 16:19
  */
 @Data
