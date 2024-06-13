@@ -13,6 +13,34 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <version>1.0.0</version>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>gateway-api-encrypt-starter is a starter built upon Spring Cloud Gateway that introduces API encryption
+        and decryption capabilities. It enables the completion of API encryption and decryption functions based on
+        configuration settings.
+    </description>
+    <url>https://github.com/jasonkung22/gateway-api-encrypt</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>JasonKung</name>
+            <email>704210402@qq.com</email>
+            <organization>futuai</organization>
+            <organizationUrl>https://github.com/jasonkung22/gateway-api-encrypt</organizationUrl>
+        </developer>
+    </developers>
+    <!-- scm -->
+    <scm>
+        <connection>scm:git:git://github.com/jasonkung22/gateway-api-encrypt.git</connection>
+        <developerConnection>scm:git:ssh://github.com/jasonkung22/gateway-api-encrypt.git</developerConnection>
+        <url>https://github.com/jasonkung22/gateway-api-encrypt</url>
+    </scm>
 
     <modules>
         <module>gateway-api-encrypt-starter</module>
@@ -83,6 +111,56 @@
                         <id>attach-sources</id>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- JavaDoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <charset>UTF-8</charset>
+                    <encoding>UTF-8</encoding>
+                    <tags>
+                        <tag>
+                            <name>date</name>
+                            <placement>a</placement>
+                            <head>skip date tag</head>
+                        </tag>
+                    </tags>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.4.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <tokenAuth>true</tokenAuth>
+                </configuration>
+            </plugin>
+            <plugin>
+                <!--gpg 签名插件，后面需要配置-->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
                         </goals>
                     </execution>
                 </executions>
