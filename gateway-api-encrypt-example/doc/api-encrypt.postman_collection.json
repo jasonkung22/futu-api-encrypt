@@ -232,15 +232,18 @@
         "header": [
           {
             "key": "ts",
-            "value": "1718071578000"
+            "value": "1718071578000",
+            "disabled": true
           },
           {
             "key": "ek",
-            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc="
+            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc=",
+            "disabled": true
           },
           {
             "key": "sign",
-            "value": "e908a1b83de1f3ab0d01c603fc8cbe1442111ea4a924454ac368efc54823024b"
+            "value": "e908a1b83de1f3ab0d01c603fc8cbe1442111ea4a924454ac368efc54823024b",
+            "disabled": true
           }
         ],
         "body": {
@@ -253,7 +256,7 @@
           }
         },
         "url": {
-          "raw": "192.168.1.6:8000/api/user/code4?test1=1&test3=3&test2=2",
+          "raw": "192.168.1.6:8000/api/user/code5?test1=1&test3=3&test2=2",
           "host": [
             "192",
             "168",
@@ -264,7 +267,7 @@
           "path": [
             "api",
             "user",
-            "code4"
+            "code5"
           ],
           "query": [
             {
@@ -278,6 +281,58 @@
             {
               "key": "test2",
               "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "code_error",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "ts",
+            "value": "1718071578000"
+          },
+          {
+            "key": "ek",
+            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc=",
+            "disabled": true
+          },
+          {
+            "key": "sign",
+            "value": "e71c90b34e063cb2d647056fd7c994346b19f2522d68d04002996efb868208a3"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "T5Nw3DVQORHrCgYRFUrtmg==",
+          "options": {
+            "raw": {
+              "language": "text"
+            }
+          }
+        },
+        "url": {
+          "raw": "192.168.1.6:8000/api/user/code?ciphertext=TnLvyMzMeWXe6nLywiTFDeGh7i9R4VSUtWYe%2Bnpz780%3D",
+          "host": [
+            "192",
+            "168",
+            "1",
+            "6"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "user",
+            "code"
+          ],
+          "query": [
+            {
+              "key": "ciphertext",
+              "value": "TnLvyMzMeWXe6nLywiTFDeGh7i9R4VSUtWYe%2Bnpz780%3D"
             }
           ]
         }
