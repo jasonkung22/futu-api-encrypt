@@ -22,6 +22,8 @@ spring:
           black-list:
             - /api/user/code
             - /api/user/code2
+            - /api/user/code3
+            - /api/user/code4
         timestamp:
           # 时间戳校验开关
           enable: true
@@ -39,6 +41,7 @@ spring:
             # 白名单URL列表
             white-list:
               - /api/user/code2
+              - /api/user/code4
         # 响应加密配置
         response-encrypt:
           # 检测模式
@@ -48,6 +51,7 @@ spring:
             # 黑名单URL列表
             black-list:
               - /api/user/code
+              - /api/user/code4
       routes:
         - id: user_rote
           uri: lb://user
