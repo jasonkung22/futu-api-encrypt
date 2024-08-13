@@ -11,6 +11,11 @@
 
     <artifactId>futu-api-encrypt-spring-boot-starter</artifactId>
 
+    <description>futu-api-encrypt-spring-boot-starter is a starter built upon SpringBoot that introduces API encryption
+        and decryption capabilities. It enables the completion of API encryption and decryption functions based on
+        configuration settings.
+    </description>
+
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>

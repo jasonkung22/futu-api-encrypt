@@ -8,9 +8,12 @@
         <version>1.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <version>1.1.0</version>
 
     <artifactId>futu-api-encrypt-spring-cloud-gateway-starter</artifactId>
+    <description>futu-api-encrypt-spring-cloud-gateway-starter is a starter built upon SpringCloudGateway that
+        introduces API encryption and decryption capabilities. It enables the completion of API encryption and
+        decryption functions based on configuration settings.
+    </description>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

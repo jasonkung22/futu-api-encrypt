@@ -14,9 +14,11 @@
     <packaging>pom</packaging>
     <version>1.1.0</version>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>gateway-api-encrypt-starter is a starter built upon Spring Cloud Gateway that introduces API encryption
-        and decryption capabilities. It enables the completion of API encryption and decryption functions based on
-        configuration settings.
+    <description>futu-api-encrypt is a starter for interface encryption and decryption based on SpringBoot and
+        SpringCloudGateway. With simple configuration using Spring Boot, it can achieve parameter validation and
+        encryption in various business scenarios. It includes functions such as timestamp validation, signature
+        validation, symmetric encryption, and asymmetric encryption, and can also filter interface addresses based on
+        white and black lists.
     </description>
     <url>https://github.com/jasonkung22/gateway-api-encrypt</url>
 
@@ -50,6 +52,9 @@
     </modules>
 
     <properties>
+        <!-- futu-api-encrypt version -->
+        <futu-api-encrypt.version>1.1.0</futu-api-encrypt.version>
+
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
@@ -58,7 +63,6 @@
         <lombok.version>1.18.16</lombok.version>
         <slf4j.version>1.7.30</slf4j.version>
         <hutool.version>5.7.12</hutool.version>
-        <futu.api.encrypt.version>1.1.0</futu.api.encrypt.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -95,7 +99,7 @@
             <dependency>
                 <groupId>cn.futuai.open</groupId>
                 <artifactId>futu-api-encrypt-core</artifactId>
-                <version>${futu.api.encrypt.version}</version>
+                <version>${futu-api-encrypt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
