@@ -1,14 +1,23 @@
 # 一、概述
-gateway-api-encrypt是一款基于spring-cloud-gateway的接口加解密starter，通过SpringBoot的简单配置就能够实现各种业务场景下的接口参数校验和加解密。其中包含**时间戳**校验、**签名**校验、**对称加密**、**非对称加密**等多种功能，也能够根据白名单、黑名单配置过滤接口地址。
+
+futu-api-encrypt是一款基于spring-boot和spring-cloud-gateway的接口加解密starter，通spring-boot的简单配置就能够实现各种业务场景下的接口参数校验和加解密。其中包含**时间戳**
+校验、**签名**校验、**对称加密**、**非对称加密**等多种功能，也能够根据白名单、黑名单配置过滤接口地址。
+
 # 二、快速开始
+
+> 基于spring-cloud-gateway（spring-boot类似）
+
 ### 1、引入依赖
+
 ```xml
+
 <dependency>
     <groupId>cn.futuai.open</groupId>
-    <artifactId>gateway-api-encrypt-starter</artifactId>
-    <version>1.0.0</version>
+    <artifactId>futu-api-encrypt-spring-cloud-gateway-starter</artifactId>
+    <version>1.1.0</version>
 </dependency>
 ```
+
 ### 2、配置参数
 ```yaml
 spring:
@@ -20,7 +29,7 @@ spring:
         # 加密对称密钥http header key
         encrypt-aes-key-header-key: "ek"
         # 时间戳http header key
-        timestamp-header-key: "ek"
+        timestamp-header-key: "ts"
         # 签名值http header key
         sign-header-key: "sign"
         # 加密query参数key
@@ -35,16 +44,21 @@ spring:
           black-list:
             - /api/user/code
             - /api/user/code2
+            - /api/user/code3
+            - /api/user/code4
+            - /api/user/export
         timestamp:
           # 时间戳校验开关
-          enable: true
+          enabled: true
           # 时间戳有效秒数
-          timestamp-valid-second: 604800
+          timestamp-valid-second: 31536000 # 1年
         sign:
           # 签名校验开关
-          enable: true
+          enabled: true
         # 请求解密配置
         request-decrypt:
+          # 是否开启
+          enabled: true
           # 检测模式
           check-model:
             # 白名单模式
@@ -52,8 +66,11 @@ spring:
             # 白名单URL列表
             white-list:
               - /api/user/code2
+              - /api/user/code4
         # 响应加密配置
         response-encrypt:
+          # 是否开启
+          enabled: true
           # 检测模式
           check-model:
             # 黑名单模式
@@ -61,6 +78,8 @@ spring:
             # 黑名单URL列表
             black-list:
               - /api/user/code
+              - /api/user/code4
+              - /api/user/export
 ```
 ### 3、自定义API异常回调管理器
 ```java
@@ -69,7 +88,7 @@ public class ApiEncryptConfiguration {
 
     public ApiEncryptConfiguration() {
         // 网关回调管理器
-        GatewayApiInvalidCallbackManager.setApiInvalidHandler(new ApiValidExceptionRequestHandler() {
+        GatewayApiExceptionCallbackManager.setApiExceptionHandler(new GatewayApiExceptionRequestHandler() {
             /**
              * 网关API校验失败，就会调用此回调
              * @param serverWebExchange serverWebExchange
@@ -80,8 +99,9 @@ public class ApiEncryptConfiguration {
             public Mono<ServerResponse> handleRequest(ServerWebExchange serverWebExchange,
                     Throwable throwable) {
                 Response<Void> error = Response.create(ResponseTypeEnum.PARAM_VALID_ERROR);
-                String errJson = JacksonMapper.toJsonString(error);
-                return ServerResponse.ok().body(Mono.just(errJson), String.class);
+                String errJson = JSONUtil.toJsonStr(error);
+                return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+                        .body(Mono.just(errJson), String.class);
             }
         });
     }
@@ -91,13 +111,19 @@ public class ApiEncryptConfiguration {
 ### 1、配置网关服务和用户服务
 #### 网关服务：
 
-- 引入gateway-api-encrypt-starter和nacos依赖
+- 引入futu-api-encrypt-spring-cloud-gateway-starter和nacos依赖
 - 参考“快速开始”配置API加解密规则
 #### 用户服务
 
 - 引入nacos等依赖
 - 定义API接口
+
 ```java
+
+@Slf4j
+@RestController
+public class UserController {
+
     @PostMapping("{path}")
     public Map<String, Object> code(@PathVariable("path") String path, @RequestParam String test1,
             @RequestParam String test2,
@@ -112,23 +138,53 @@ public class ApiEncryptConfiguration {
         log.info(String.valueOf(map));
         return map;
     }
+
+    @SneakyThrows
+    @GetMapping("export")
+    public void export(HttpServletResponse response) {
+        HttpHeaders headers = new HttpHeaders();
+        String name = "测试文件";
+
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", UriUtils.encode(name, StandardCharsets.UTF_8) + ".xlsx");
+
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            response.setHeader(entry.getKey(), String.join(";", entry.getValue()));
+        }
+
+        IOUtils.copy(new FileInputStream("D:\\project\\personal\\futu-api-encrypt\\example\\doc\\测试.xlsx"),
+                response.getOutputStream());
+    }
+}
 ```
+
 ### 2、发起请求
-[postman文件](https://github.com/jasonkung22/gateway-api-encrypt/blob/master/gateway-api-encrypt-example/doc/api-encrypt.postman_collection.json)
+
 #### 请求参数加密，响应结果加密，校验时间戳、签名
-![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1718550548941-7602284a-2398-49dd-8693-1b20c32e199c.png#averageHue=%23fdfdfc&clientId=uaf5e9763-0136-4&from=paste&height=753&id=u549165f4&originHeight=1130&originWidth=1568&originalType=binary&ratio=1.5&rotation=0&showTitle=false&size=76756&status=done&style=none&taskId=ubb236067-46d9-4a1a-b906-2198f8658d7&title=&width=1045.3333333333333)
+
+![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1723463068571-469cbc39-1237-43d4-bdaa-e6495fd6efad.png#averageHue=%23fdfcfc&clientId=u0f345f74-d927-4&from=paste&height=618&id=ud0b94ff5&originHeight=618&originWidth=865&originalType=binary&ratio=1&rotation=0&showTitle=false&size=40216&status=done&style=none&taskId=u55edca16-0e37-4bf6-8a05-2c2a5006e39&title=&width=865)
+
 #### 请求参数不加密，响应结果不加密，校验时间戳、签名
+
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1718550690737-7e0c7c38-3250-48c3-ae6d-9714183a278d.png#averageHue=%23fdfdfd&clientId=uaf5e9763-0136-4&from=paste&height=853&id=u793141e2&originHeight=1279&originWidth=1257&originalType=binary&ratio=1.5&rotation=0&showTitle=false&size=67864&status=done&style=none&taskId=u61834138-13f9-4577-be79-f9aa7976526&title=&width=838)
+
 #### 请求参数加密，响应结果不加密，校验时间戳、签名
-![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1718550906540-d2a6663d-15ae-4e06-8cfb-a012bbe24241.png#averageHue=%23fdfdfd&clientId=uaf5e9763-0136-4&from=paste&height=867&id=u5ecbb6ed&originHeight=1300&originWidth=1549&originalType=binary&ratio=1.5&rotation=0&showTitle=false&size=76880&status=done&style=none&taskId=u7aec523a-1a77-4947-b414-92ae55da36c&title=&width=1032.6666666666667)
+
+![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1723463106346-988f417f-b577-4749-aafd-a2e33a07ed4f.png#averageHue=%23fdfdfd&clientId=u0f345f74-d927-4&from=paste&height=700&id=uca1ae20d&originHeight=700&originWidth=1004&originalType=binary&ratio=1&rotation=0&showTitle=false&size=46035&status=done&style=none&taskId=ubd0db2a7-836f-4800-afbc-f9ae711abe1&title=&width=1004)
+
 #### 请求参数不加密，响应结果加密，校验时间戳、签名
+
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1718550974052-0dae9688-6744-43c2-ac41-f104c232db5f.png#averageHue=%23fdfdfc&clientId=uaf5e9763-0136-4&from=paste&height=767&id=u6be91f79&originHeight=1151&originWidth=1644&originalType=binary&ratio=1.5&rotation=0&showTitle=false&size=73149&status=done&style=none&taskId=u0293497d-bdcd-4dab-8c0b-06958221d5d&title=&width=1096)
+
 #### 跳过所有检测
+
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1718551122125-f8d16e65-c796-41ca-8c4e-625065c6dbf3.png#averageHue=%23fdfdfd&clientId=uaf5e9763-0136-4&from=paste&height=835&id=u3a8f089f&originHeight=1253&originWidth=2445&originalType=binary&ratio=1.5&rotation=0&showTitle=false&size=104682&status=done&style=none&taskId=u81683239-7942-490d-8fa8-fb9d8e4b443&title=&width=1630)
+
 #### 错误请求
-![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1718551549253-0ff61da8-f04f-4718-873b-4c4219201df9.png#averageHue=%23fdfdfd&clientId=uaf5e9763-0136-4&from=paste&height=761&id=ud5f5fadc&originHeight=1142&originWidth=2458&originalType=binary&ratio=1.5&rotation=0&showTitle=false&size=105907&status=done&style=none&taskId=uc902df94-a5f6-4abf-a68f-8c5c6f0f14e&title=&width=1638.6666666666667)
-### 3、案例源码
-[https://github.com/jasonkung22/gateway-api-encrypt/tree/master/gateway-api-encrypt-example](https://github.com/jasonkung22/gateway-api-encrypt/tree/master/gateway-api-encrypt-example)
+
+![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1723464493419-40a6cdd2-7479-47c1-9bce-f60229f41e67.png#averageHue=%23fdfdfd&clientId=u0f345f74-d927-4&from=paste&height=649&id=u3d301b35&originHeight=649&originWidth=931&originalType=binary&ratio=1&rotation=0&showTitle=false&size=38983&status=done&style=none&taskId=uc566f878-8717-4f02-bf1b-31a2cd7f9fd&title=&width=931)
+
 # 四、原理解析
+
 [API接口加解密技术方案（参考HTTPS原理和微信支付）](https://juejin.cn/post/7358368402795692082)
-# 五、原理解析
+

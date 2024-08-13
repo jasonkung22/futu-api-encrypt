@@ -1,0 +1,177 @@
+{
+  "groups": [
+    {
+      "name": "spring.api-encrypt",
+      "type": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.check-model",
+      "type": "cn.futuai.open.encrypt.core.property.CheckModel",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.request-decrypt",
+      "type": "cn.futuai.open.encrypt.core.property.RequestDecrypt",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.request-decrypt.check-model",
+      "type": "cn.futuai.open.encrypt.core.property.CheckModel",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.response-encrypt",
+      "type": "cn.futuai.open.encrypt.core.property.ResponseEncrypt",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.response-encrypt.check-model",
+      "type": "cn.futuai.open.encrypt.core.property.CheckModel",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.sign",
+      "type": "cn.futuai.open.encrypt.core.property.SignVerify",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.timestamp",
+      "type": "cn.futuai.open.encrypt.core.property.TimestampVerify",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "spring.api-encrypt.check-model.black-list",
+      "type": "java.util.List<java.lang.String>",
+      "description": "黑名单",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.check-model.model",
+      "type": "cn.futuai.open.encrypt.core.property.CheckModel.CheckModelEnum",
+      "description": "检查模式",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.check-model.white-list",
+      "type": "java.util.List<java.lang.String>",
+      "description": "白名单",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.enabledd",
+      "type": "java.lang.Boolean",
+      "description": "是否开启",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "spring.api-encrypt.encrypt-aes-key-header-key",
+      "type": "java.lang.String",
+      "description": "加密aes密钥header key",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": "ek"
+    },
+    {
+      "name": "spring.api-encrypt.encrypt-param-key",
+      "type": "java.lang.String",
+      "description": "加密参数key",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": "ciphertext"
+    },
+    {
+      "name": "spring.api-encrypt.request-decrypt.check-model.black-list",
+      "type": "java.util.List<java.lang.String>",
+      "description": "黑名单",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.request-decrypt.check-model.model",
+      "type": "cn.futuai.open.encrypt.core.property.CheckModel.CheckModelEnum",
+      "description": "检查模式",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.request-decrypt.check-model.white-list",
+      "type": "java.util.List<java.lang.String>",
+      "description": "白名单",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.request-decrypt.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启响应解密",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "spring.api-encrypt.response-encrypt.check-model.black-list",
+      "type": "java.util.List<java.lang.String>",
+      "description": "黑名单",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.response-encrypt.check-model.model",
+      "type": "cn.futuai.open.encrypt.core.property.CheckModel.CheckModelEnum",
+      "description": "检查模式",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.response-encrypt.check-model.white-list",
+      "type": "java.util.List<java.lang.String>",
+      "description": "白名单",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.response-encrypt.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启响应加密",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "spring.api-encrypt.rsa-private-key",
+      "type": "java.lang.String",
+      "description": "RSA私钥",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": ""
+    },
+    {
+      "name": "spring.api-encrypt.sign-header-key",
+      "type": "java.lang.String",
+      "description": "签名header key",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": "sign"
+    },
+    {
+      "name": "spring.api-encrypt.sign.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启签名校验",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "spring.api-encrypt.timestamp-header-key",
+      "type": "java.lang.String",
+      "description": "时间戳header key",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": "ts"
+    },
+    {
+      "name": "spring.api-encrypt.timestamp.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启时间戳校验",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
+      "defaultValue": true
+    },
+    {
+      "name": "spring.api-encrypt.timestamp.timestamp-valid-second",
+      "type": "java.lang.Long",
+      "description": "时间戳有效秒数",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    }
+  ],
+  "hints": []
+}

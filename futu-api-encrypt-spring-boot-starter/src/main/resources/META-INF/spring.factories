@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.futuai.open.encrypt.spring.boot.config.ApiEncryptAutoConfiguration,\
+cn.futuai.open.encrypt.spring.boot.exception.ApiExceptionHandler

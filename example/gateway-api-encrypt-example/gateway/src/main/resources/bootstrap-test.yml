@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    nacos:
+      config:
+        group: test
+        server-addr: 192.168.0.7:8848
+        file-extension: yaml
+        username: iupward
+        password: zylr1HIL*pFZuri*
+      discovery:
+        server-addr: 192.168.0.7:8848
+        username: iupward
+        password: zylr1HIL*pFZuri*

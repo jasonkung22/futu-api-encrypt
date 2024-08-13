@@ -1,0 +1,62 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /api/user
+spring:
+  api-encrypt:
+    # 全局开关
+    enabled: true
+    # 加密对称密钥http header key
+    encrypt-aes-key-header-key: "ek"
+    # 时间戳http header key
+    timestamp-header-key: "ts"
+    # 签名值http header key
+    sign-header-key: "sign"
+    # 加密query参数key
+    encrypt-param-key: "ciphertext"
+    # rsa非对称加密私钥
+    rsa-private-key: "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAI6VKvsus/Z0R3zvqre3gzClHJdsCVeKq89hZFFWbg5l3FNbiGZEEiuD1LL+USi5GCxeRK+xEOFTj7I/waRVb3x7V3J1N0q4nNWoZvRey0MTVaBkoHeB5tzn2ZOCBQRJnijXcO58ChcLXOTQId+zDiCBCom/A62gtH8isH4PYoZXAgMBAAECgYBpetrwNa223nDgcWFHRkCMZSmQr8D9fT37Th5rudfzWNG07RssJKGYhY9913xs9vl2IUsI+qH1P98nS9lSXE37mfOKFhfGZIUjAhMb7/w8hhuHpBXopVpUJZW0B46gfPOsrmvq+xiwlI02UYJ1ZOrfdfbvss/Gwtgrk4pMigL1OQJBANRm4mOUMwF+xUxeOLa2Aafke/iwdcxoV1k1gXmTH0B8wf08zDR7heW737YBEvsjyfEpjo7Y0kGSE5zmTWNnuKUCQQCr2XuZeJLqq6etq7IhboPAx8E2xgfOY/hgKPr9IvM8gYee628YhyOynIhOVFGxaf7dMH9eZ1P6jAbvsgm+mFZLAkEAyY0btJyTzg5q0G30aUTKy3OgRDvGfIJiqM+CHkiCdmIsfs5rhD3WsEqYHZBlX5T1cvgZQ+nxkrE4FUHhG7v31QJAYJZ9TNYjJTjTpt5A4V9/OAROCZ4mVw+DU3DVGR/ivJhFBMJpD80s+D/YsMXdoKzlraaLgCDtZ336jBByP6jZnwJBAIGUnbs7eRLcXzlbORdKC/EfkDYS2rrXLFvQhehT7Y8dKHLZfJElnrHB33Qd8R8WP0PsPU6D7EWNU2zVNK1EDxY="
+    # 检测模式
+    check-model:
+      # 模式
+      model: black_list
+      # 黑名单URL列表
+      black-list:
+        - /api/user/code
+        - /api/user/code2
+        - /api/user/code3
+        - /api/user/code4
+        - /api/user/export
+    timestamp:
+      # 时间戳校验开关
+      enabled: true
+      # 时间戳有效秒数
+      timestamp-valid-second: 31536000 # 1年
+    sign:
+      # 签名校验开关
+      enabled: true
+    # 请求解密配置
+    request-decrypt:
+      # 是否开启
+      enabled: true
+      # 检测模式
+      check-model:
+        # 白名单模式
+        model: white_list
+        # 白名单URL列表
+        white-list:
+          - /api/user/code2
+          - /api/user/code4
+    # 响应加密配置
+    response-encrypt:
+      # 是否开启
+      enabled: true
+      # 检测模式
+      check-model:
+        # 黑名单模式
+        model: black_list
+        # 黑名单URL列表
+        black-list:
+          - /api/user/code
+          - /api/user/code4
+          - /api/user/export

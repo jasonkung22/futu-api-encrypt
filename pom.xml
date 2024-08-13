@@ -9,10 +9,10 @@
     </parent>
 
     <groupId>cn.futuai.open</groupId>
-    <artifactId>gateway-api-encrypt-parent</artifactId>
+    <artifactId>futu-api-encrypt-parent</artifactId>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>gateway-api-encrypt-starter is a starter built upon Spring Cloud Gateway that introduces API encryption
         and decryption capabilities. It enables the completion of API encryption and decryption functions based on
@@ -43,8 +43,10 @@
     </scm>
 
     <modules>
-        <module>gateway-api-encrypt-starter</module>
-        <module>gateway-api-encrypt-example</module>
+        <module>futu-api-encrypt-core</module>
+        <module>futu-api-encrypt-spring-boot-starter</module>
+        <module>futu-api-encrypt-spring-cloud-gateway-starter</module>
+        <module>example</module>
     </modules>
 
     <properties>
@@ -56,6 +58,7 @@
         <lombok.version>1.18.16</lombok.version>
         <slf4j.version>1.7.30</slf4j.version>
         <hutool.version>5.7.12</hutool.version>
+        <futu.api.encrypt.version>1.1.0</futu.api.encrypt.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -88,6 +91,11 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.futuai.open</groupId>
+                <artifactId>futu-api-encrypt-core</artifactId>
+                <version>${futu.api.encrypt.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,0 +1,383 @@
+{
+  "info": {
+    "_postman_id": "07150346-8bf9-4f00-8908-c12b8ceefb8c",
+    "name": "api-encrypt Copy",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "13612021"
+  },
+  "item": [
+    {
+      "name": "code",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "ts",
+            "value": "1718071578000"
+          },
+          {
+            "key": "ek",
+            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc="
+          },
+          {
+            "key": "sign",
+            "value": "e71c90b34e063cb2d647056fd7c994346b19f2522d68d04002996efb868208a3"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "T5Nw3DVQORHrCgYRFUrtmg==",
+          "options": {
+            "raw": {
+              "language": "text"
+            }
+          }
+        },
+        "url": {
+          "raw": "192.168.3.67:8000/api/user/code?ciphertext=TnLvyMzMeWXe6nLywiTFDeGh7i9R4VSUtWYe+npz780=",
+          "host": [
+            "192",
+            "168",
+            "3",
+            "67"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "user",
+            "code"
+          ],
+          "query": [
+            {
+              "key": "ciphertext",
+              "value": "TnLvyMzMeWXe6nLywiTFDeGh7i9R4VSUtWYe+npz780="
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "code3",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "ts",
+            "value": "1718071578000"
+          },
+          {
+            "key": "ek",
+            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc="
+          },
+          {
+            "key": "sign",
+            "value": "e71c90b34e063cb2d647056fd7c994346b19f2522d68d04002996efb868208a3"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "T5Nw3DVQORHrCgYRFUrtmg==",
+          "options": {
+            "raw": {
+              "language": "text"
+            }
+          }
+        },
+        "url": {
+          "raw": "192.168.3.67:8000/api/user/code3?ciphertext=TnLvyMzMeWXe6nLywiTFDeGh7i9R4VSUtWYe+npz780=",
+          "host": [
+            "192",
+            "168",
+            "3",
+            "67"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "user",
+            "code3"
+          ],
+          "query": [
+            {
+              "key": "ciphertext",
+              "value": "TnLvyMzMeWXe6nLywiTFDeGh7i9R4VSUtWYe+npz780="
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "code2",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "ts",
+            "value": "1718071578000"
+          },
+          {
+            "key": "ek",
+            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc="
+          },
+          {
+            "key": "sign",
+            "value": "e908a1b83de1f3ab0d01c603fc8cbe1442111ea4a924454ac368efc54823024b"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"test123\":123}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "192.168.3.67:8000/api/user/code2?test1=1&test3=3&test2=2",
+          "host": [
+            "192",
+            "168",
+            "3",
+            "67"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "user",
+            "code2"
+          ],
+          "query": [
+            {
+              "key": "test1",
+              "value": "1"
+            },
+            {
+              "key": "test3",
+              "value": "3"
+            },
+            {
+              "key": "test2",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "code4",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "ts",
+            "value": "1718071578000"
+          },
+          {
+            "key": "ek",
+            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc="
+          },
+          {
+            "key": "sign",
+            "value": "e908a1b83de1f3ab0d01c603fc8cbe1442111ea4a924454ac368efc54823024b"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"test123\":123}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "192.168.3.67:8000/api/user/code4?test1=1&test3=3&test2=2",
+          "host": [
+            "192",
+            "168",
+            "3",
+            "67"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "user",
+            "code4"
+          ],
+          "query": [
+            {
+              "key": "test1",
+              "value": "1"
+            },
+            {
+              "key": "test3",
+              "value": "3"
+            },
+            {
+              "key": "test2",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "code5",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "ts",
+            "value": "1718071578000",
+            "disabled": true
+          },
+          {
+            "key": "ek",
+            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc=",
+            "disabled": true
+          },
+          {
+            "key": "sign",
+            "value": "e908a1b83de1f3ab0d01c603fc8cbe1442111ea4a924454ac368efc54823024b",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"test123\":123}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "192.168.3.67:8000/api/user/code5?test1=1&test3=3&test2=2",
+          "host": [
+            "192",
+            "168",
+            "3",
+            "67"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "user",
+            "code5"
+          ],
+          "query": [
+            {
+              "key": "test1",
+              "value": "1"
+            },
+            {
+              "key": "test3",
+              "value": "3"
+            },
+            {
+              "key": "test2",
+              "value": "2"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "code_error",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "ts",
+            "value": "1718071578000"
+          },
+          {
+            "key": "ek",
+            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc=",
+            "disabled": true
+          },
+          {
+            "key": "sign",
+            "value": "e71c90b34e063cb2d647056fd7c994346b19f2522d68d04002996efb868208a3"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "T5Nw3DVQORHrCgYRFUrtmg==",
+          "options": {
+            "raw": {
+              "language": "text"
+            }
+          }
+        },
+        "url": {
+          "raw": "192.168.3.67:8000/api/user/code?ciphertext=TnLvyMzMeWXe6nLywiTFDeGh7i9R4VSUtWYe+npz780=",
+          "host": [
+            "192",
+            "168",
+            "3",
+            "67"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "user",
+            "code"
+          ],
+          "query": [
+            {
+              "key": "ciphertext",
+              "value": "TnLvyMzMeWXe6nLywiTFDeGh7i9R4VSUtWYe+npz780="
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "export",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "ts",
+            "value": "1718071578000",
+            "type": "text"
+          },
+          {
+            "key": "sign",
+            "value": "f5f9cdd0319f70cee84664561e52eb97a27d8c60c4434a0e7281a0662fface68",
+            "type": "text"
+          },
+          {
+            "key": "ek",
+            "value": "feIBBw7JVBFQRIYN8AtBIVvVC/yW2nwEnm3edhreXRrDtx2+8qYRPkNlXgPU0Ga58HkbGAyuaJDaM+cOKb2Owtje3dfSOlPLLbbGUJCkkcbtbwXUuPSjW6UYfRhBuadpIk539kv/wgpWlO5Xei/T40+hJ07sqCrfkAm9oNtKEcc=",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "192.168.3.67:8000/api/user/export",
+          "host": [
+            "192",
+            "168",
+            "3",
+            "67"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "user",
+            "export"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
