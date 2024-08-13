@@ -61,7 +61,7 @@
       "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
     },
     {
-      "name": "spring.api-encrypt.enabledd",
+      "name": "spring.api-encrypt.enabled",
       "type": "java.lang.Boolean",
       "description": "是否开启",
       "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties",
