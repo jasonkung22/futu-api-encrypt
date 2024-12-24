@@ -43,6 +43,12 @@
   ],
   "properties": [
     {
+      "name": "spring.cloud.gateway.api-encrypt.log-level",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "description": "日志级别",
+      "sourceType": "cn.futuai.open.encrypt.spring.cloud.gateway.config.property.GatewayApiEncryptProperties"
+    },
+    {
       "name": "spring.cloud.gateway.api-encrypt.check-model.black-list",
       "type": "java.util.List<java.lang.String>",
       "description": "黑名单",
@@ -173,5 +179,51 @@
       "sourceType": "cn.futuai.open.encrypt.spring.cloud.gateway.config.property.GatewayApiEncryptProperties"
     }
   ],
-  "hints": []
+  "hints": [
+    {
+      "name": "spring.cloud.gateway.api-encrypt.log-level.keys",
+      "values": [
+        {
+          "value": "default",
+          "description": "default logging level"
+        }
+      ],
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    },
+    {
+      "name": "spring.cloud.gateway.api-encrypt.log-level.values",
+      "values": [
+        {
+          "value": "trace"
+        },
+        {
+          "value": "debug"
+        },
+        {
+          "value": "info"
+        },
+        {
+          "value": "warn"
+        },
+        {
+          "value": "error"
+        },
+        {
+          "value": "fatal"
+        },
+        {
+          "value": "off"
+        }
+      ],
+      "providers": [
+        {
+          "name": "any"
+        }
+      ]
+    }
+  ]
 }

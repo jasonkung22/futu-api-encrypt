@@ -9,32 +9,31 @@ import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 请求解密过滤器
  * @author Jason Kung
  * @date 2023/10/10 17:12
  */
-@Slf4j
 public class RequestApiDecryptFilter implements Filter {
 
     @Resource
     private ApiEncryptProperties apiEncryptProperty;
 
     @Override
-    @SneakyThrows
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
@@ -59,8 +58,7 @@ public class RequestApiDecryptFilter implements Filter {
             Map<String, String> decryptRequestParam = decryptRequestParam(queryString, aesKey);
             updateRequestParam(requestWrapper, decryptRequestParam);
         } catch (Exception e) {
-            log.error("解密请求参数异常,requestUri:{}, queryString:{}, aesKey:{}", requestUri, queryString, aesKey, e);
-            throw new ApiDecryptException();
+            throw new ApiDecryptException(requestUri, queryString, aesKey, e);
         }
 
         String orgBody = (String) requestWrapper.getAttribute(ApiEncryptConstant.ORG_BODY);
@@ -73,14 +71,12 @@ public class RequestApiDecryptFilter implements Filter {
             String body = ApiEncryptUtil.aesDecrypt(orgBody, aesKey);
             requestWrapper.setBody(body);
         } catch (Exception e) {
-            log.error("解密body参数异常,requestUri:{}, orgBody:{}, aesKey:{}", requestUri, orgBody, aesKey, e);
-            throw new ApiDecryptException();
+            throw new ApiDecryptException(requestUri, queryString, aesKey, e);
         }
 
         chain.doFilter(requestWrapper, resp);
     }
 
-    @SneakyThrows
     private Map<String, String> decryptRequestParam(String queryString, String aesKey) {
         Map<String, String> paramMap = new HashMap<>();
         if (StrUtil.isNotBlank(queryString) && queryString.contains(
@@ -105,18 +101,12 @@ public class RequestApiDecryptFilter implements Filter {
     /**
      * 修改前端传的参数
      */
-    @SneakyThrows
     private void updateRequestParam(HttpEncryptRequestWrapper request, Map<String, String> param) {
         if (CollectionUtil.isEmpty(param)) {
             return;
         }
 
-        try {
-            request.setParameter(param);
-        } catch (Exception e) {
-            log.error("修改请求参数异常, param:{}", param, e);
-            throw new ApiDecryptException();
-        }
+        request.setParameter(param);
     }
 
 }

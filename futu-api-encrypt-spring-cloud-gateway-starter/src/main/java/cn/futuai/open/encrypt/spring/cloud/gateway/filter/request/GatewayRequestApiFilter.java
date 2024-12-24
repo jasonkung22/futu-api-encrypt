@@ -1,15 +1,13 @@
 package cn.futuai.open.encrypt.spring.cloud.gateway.filter.request;
 
 import cn.futuai.open.encrypt.core.constants.ApiEncryptConstant;
-import cn.futuai.open.encrypt.core.exception.ApiBaseException;
+import cn.futuai.open.encrypt.core.exception.ApiDecryptException;
 import cn.futuai.open.encrypt.core.util.ApiChecker;
 import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.futuai.open.encrypt.spring.cloud.gateway.config.property.GatewayApiEncryptProperties;
 import cn.hutool.core.util.StrUtil;
 import java.nio.charset.StandardCharsets;
 import javax.annotation.Resource;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -29,7 +27,6 @@ import reactor.core.publisher.Mono;
  * @author Jason Kung
  * @date 2024/06/08 14:28
  */
-@Slf4j
 @SuppressWarnings("NullableProblems")
 public class GatewayRequestApiFilter implements GlobalFilter, Ordered {
 
@@ -37,7 +34,6 @@ public class GatewayRequestApiFilter implements GlobalFilter, Ordered {
     private GatewayApiEncryptProperties gatewayApiEncryptProperty;
 
     @Override
-    @SneakyThrows
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
         ServerHttpRequest request = exchange.getRequest();
@@ -68,8 +64,7 @@ public class GatewayRequestApiFilter implements GlobalFilter, Ordered {
                 String aseKey = ApiEncryptUtil.rsaDecrypt(encryptAesKey);
                 exchange.getAttributes().put(ApiEncryptConstant.AES_KEY, aseKey);
             } catch (Exception e) {
-                log.error("对称加密密钥解密失败,requestUri:{},encryptAesKey:{}", requestUri, encryptAesKey, e);
-                throw new ApiBaseException();
+                throw new ApiDecryptException(requestUri, encryptAesKey, "", e);
             }
         }
 

@@ -7,4 +7,14 @@ package cn.futuai.open.encrypt.core.exception;
  */
 public class ApiBaseException extends RuntimeException {
 
+    public ApiBaseException() {
+    }
+
+    public ApiBaseException(String message) {
+        super(message);
+    }
+
+    public ApiBaseException(String message, Throwable e) {
+        super(message, e);
+    }
 }

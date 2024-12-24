@@ -7,8 +7,6 @@ import cn.futuai.open.encrypt.core.util.ApiChecker;
 import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.futuai.open.encrypt.spring.cloud.gateway.config.property.GatewayApiEncryptProperties;
 import javax.annotation.Resource;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -21,14 +19,12 @@ import reactor.core.publisher.Mono;
  * @author Jason Kung
  * @date 2023/11/07 13:37
  */
-@Slf4j
 public class GatewayRequestApiSignVerifyFilter implements GlobalFilter, Ordered {
 
     @Resource
     private GatewayApiEncryptProperties gatewayApiEncryptProperty;
 
     @Override
-    @SneakyThrows
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String requestUri = request.getURI().getPath();
@@ -50,9 +46,7 @@ public class GatewayRequestApiSignVerifyFilter implements GlobalFilter, Ordered 
         String orgBody = exchange.getAttribute(ApiEncryptConstant.ORG_BODY);
 
         if (!ApiEncryptUtil.verifySign(timestamp, aesKey, orgQueryString, orgBody, sign)) {
-            log.error("请求参数验签失败,requestUri:{}, timestamp:{}, aesKey:{}, orgQueryString:{}, orgBody:{}, sign:{}",
-                    requestUri, timestamp, aesKey, orgQueryString, orgBody, sign);
-            throw new ApiSignException();
+            throw new ApiSignException(requestUri, timestamp, aesKey, orgQueryString, orgBody);
         }
         return chain.filter(exchange);
     }

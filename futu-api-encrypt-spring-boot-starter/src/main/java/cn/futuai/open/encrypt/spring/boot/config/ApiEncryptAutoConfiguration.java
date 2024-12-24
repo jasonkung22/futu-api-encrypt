@@ -1,6 +1,9 @@
 package cn.futuai.open.encrypt.spring.boot.config;
 
+import cn.futuai.open.encrypt.core.log.ApiEncryptLogger;
+import cn.futuai.open.encrypt.core.log.DefaultApiEncryptLogger;
 import cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties;
+import cn.futuai.open.encrypt.spring.boot.exception.ApiExceptionHandler;
 import cn.futuai.open.encrypt.spring.boot.filter.request.RequestApiDecryptFilter;
 import cn.futuai.open.encrypt.spring.boot.filter.request.RequestApiFilter;
 import cn.futuai.open.encrypt.spring.boot.filter.request.RequestApiSignVerifyFilter;
@@ -12,6 +15,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
 /**
  * API加密自动配置
@@ -21,6 +25,24 @@ import org.springframework.core.Ordered;
 @ConditionalOnProperty(name = "spring.api-encrypt.enabled", matchIfMissing = true)
 @EnableConfigurationProperties(ApiEncryptProperties.class)
 public class ApiEncryptAutoConfiguration {
+
+    private final ApiEncryptProperties apiEncryptProperties;
+
+    public ApiEncryptAutoConfiguration(ApiEncryptProperties apiEncryptProperties) {
+        this.apiEncryptProperties = apiEncryptProperties;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ApiEncryptLogger apiEncryptLogger() {
+        return new DefaultApiEncryptLogger(apiEncryptProperties);
+    }
+
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public ApiExceptionHandler apiExceptionHandler(ApiEncryptLogger apiEncryptLogger) {
+        return new ApiExceptionHandler(apiEncryptLogger);
+    }
 
     @Bean
     public FilterRegistrationBean<RequestApiFilter> requestApiFilterConfig(RequestApiFilter requestApiFilter) {

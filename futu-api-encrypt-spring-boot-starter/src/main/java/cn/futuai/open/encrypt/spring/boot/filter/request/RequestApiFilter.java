@@ -3,6 +3,7 @@ package cn.futuai.open.encrypt.spring.boot.filter.request;
 import cn.futuai.open.encrypt.core.HttpEncryptRequestWrapper;
 import cn.futuai.open.encrypt.core.constants.ApiEncryptConstant;
 import cn.futuai.open.encrypt.core.exception.ApiBaseException;
+import cn.futuai.open.encrypt.core.exception.ApiDecryptException;
 import cn.futuai.open.encrypt.core.util.ApiChecker;
 import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties;
@@ -18,8 +19,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 
 /**
@@ -27,16 +26,17 @@ import org.springframework.http.HttpMethod;
  * @author Jason Kung
  * @date 2024/06/08 14:28
  */
-@Slf4j
 public class RequestApiFilter implements Filter {
 
 
     @Resource
     private ApiEncryptProperties apiEncryptProperty;
+    @Resource
+    private ApiExceptionHandler apiExceptionHandler;
 
     @Override
-    @SneakyThrows({IOException.class, ServletException.class})
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
         try {
@@ -66,8 +66,7 @@ public class RequestApiFilter implements Filter {
                     String aseKey = ApiEncryptUtil.rsaDecrypt(encryptAesKey);
                     req.setAttribute(ApiEncryptConstant.AES_KEY, aseKey);
                 } catch (Exception e) {
-                    log.error("对称加密密钥解密失败,requestUri:{},encryptAesKey:{}", requestUri, encryptAesKey, e);
-                    throw new ApiBaseException();
+                    throw new ApiDecryptException(requestUri, encryptAesKey, "", e);
                 }
             }
 
@@ -83,7 +82,7 @@ public class RequestApiFilter implements Filter {
             }
             chain.doFilter(requestWrapper, resp);
         } catch (ApiBaseException e) {
-            ApiExceptionHandler.apiExceptionHandler(req, resp, e);
+            apiExceptionHandler.apiExceptionHandler(req, resp, e);
         }
     }
 }

@@ -1,6 +1,6 @@
 package cn.futuai.example.config;
 
-import cn.futuai.open.encrypt.spring.boot.callback.ApiExceptionCallbackManager;
+import cn.futuai.open.encrypt.spring.boot.callback.SpringBootApiExceptionCallbackManager;
 import cn.hutool.json.JSONUtil;
 import java.io.PrintWriter;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ public class ApiEncryptConfiguration {
 
     public ApiEncryptConfiguration() {
         // API异常回调管理器
-        ApiExceptionCallbackManager.setApiExceptionHandler((request, response, e) -> {
+        SpringBootApiExceptionCallbackManager.setApiExceptionHandler((request, response, e) -> {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");

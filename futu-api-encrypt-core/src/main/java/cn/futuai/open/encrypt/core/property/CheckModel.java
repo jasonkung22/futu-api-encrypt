@@ -2,14 +2,12 @@ package cn.futuai.open.encrypt.core.property;
 
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Data;
 
 /**
  * CheckModel
  * @author Jason Kung
  * @date 2024/08/12 14:08
  */
-@Data
 public class CheckModel {
 
     /**
@@ -26,6 +24,30 @@ public class CheckModel {
      * 黑名单
      */
     private List<String> blackList = new ArrayList<>();
+
+    public CheckModelEnum getModel() {
+        return model;
+    }
+
+    public void setModel(CheckModelEnum model) {
+        this.model = model;
+    }
+
+    public List<String> getWhiteList() {
+        return whiteList;
+    }
+
+    public void setWhiteList(List<String> whiteList) {
+        this.whiteList = whiteList;
+    }
+
+    public List<String> getBlackList() {
+        return blackList;
+    }
+
+    public void setBlackList(List<String> blackList) {
+        this.blackList = blackList;
+    }
 
     public enum CheckModelEnum {
         /**

@@ -1,21 +1,7 @@
-/*
- * Copyright 1999-2019 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package cn.futuai.open.encrypt.spring.cloud.gateway.exception;
 
 import cn.futuai.open.encrypt.core.exception.ApiBaseException;
+import cn.futuai.open.encrypt.core.log.ApiEncryptLogger;
 import cn.futuai.open.encrypt.spring.cloud.gateway.callback.GatewayApiExceptionCallbackManager;
 import java.util.List;
 import java.util.function.Supplier;
@@ -39,10 +25,13 @@ public class GatewayApiExceptionHandler implements WebExceptionHandler {
     private final List<ViewResolver> viewResolvers;
     private final List<HttpMessageWriter<?>> messageWriters;
 
+    private final ApiEncryptLogger apiEncryptLogger;
+
     public GatewayApiExceptionHandler(List<ViewResolver> viewResolvers,
-            ServerCodecConfigurer serverCodecConfigurer) {
+            ServerCodecConfigurer serverCodecConfigurer, ApiEncryptLogger apiEncryptLogger) {
         this.viewResolvers = viewResolvers;
         this.messageWriters = serverCodecConfigurer.getWriters();
+        this.apiEncryptLogger = apiEncryptLogger;
     }
 
     private Mono<Void> writeResponse(ServerResponse response, ServerWebExchange exchange) {
@@ -57,11 +46,18 @@ public class GatewayApiExceptionHandler implements WebExceptionHandler {
         if (!(ex instanceof ApiBaseException)) {
             return Mono.error(ex);
         }
-        return handleApiInvalidRequest(exchange, ex)
+
+        logApiException(ex);
+
+        return handleApiExceptionRequest(exchange, ex)
                 .flatMap(response -> writeResponse(response, exchange));
     }
 
-    private Mono<ServerResponse> handleApiInvalidRequest(ServerWebExchange exchange, Throwable throwable) {
+    private void logApiException(Throwable throwable) {
+        apiEncryptLogger.logException(throwable);
+    }
+
+    private Mono<ServerResponse> handleApiExceptionRequest(ServerWebExchange exchange, Throwable throwable) {
         return GatewayApiExceptionCallbackManager.getApiExceptionHandler().handleRequest(exchange, throwable);
     }
 

@@ -7,14 +7,12 @@ import cn.hutool.crypto.asymmetric.RSA;
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.Digester;
 import java.util.Objects;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 加解密接口实现
  * @author Jason Kung
  * @date 2023/11/07 11:27
  */
-@Slf4j
 public class ApiEncryptUtil {
 
     private final static Digester SHA256 = new Digester(DigestAlgorithm.SHA256);

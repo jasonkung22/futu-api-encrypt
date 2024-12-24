@@ -10,8 +10,6 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import java.nio.charset.StandardCharsets;
 import javax.annotation.Resource;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -29,7 +27,6 @@ import reactor.core.publisher.Mono;
  * @author Jason Kung
  * @date 2023/10/10 17:12
  */
-@Slf4j
 public class GatewayResponseEncryptFilter implements GlobalFilter, Ordered {
 
 
@@ -67,7 +64,6 @@ public class GatewayResponseEncryptFilter implements GlobalFilter, Ordered {
 
     static class ResponseEncryptRewriter implements RewriteFunction<byte[], byte[]> {
 
-        @SneakyThrows
         @Override
         public Publisher<byte[]> apply(ServerWebExchange exchange, byte[] bytes) {
             if (!MediaType.APPLICATION_JSON.equals(exchange.getResponse().getHeaders().getContentType())) {
@@ -76,7 +72,6 @@ public class GatewayResponseEncryptFilter implements GlobalFilter, Ordered {
             return Mono.just(encrypt(exchange, bytes));
         }
 
-        @SneakyThrows
         private byte[] encrypt(ServerWebExchange exchange, byte[] jsonBytes) {
             String aesKey = exchange.getAttribute(ApiEncryptConstant.AES_KEY);
             if (ArrayUtil.isEmpty(jsonBytes) || StrUtil.isBlank(aesKey)) {
@@ -85,13 +80,11 @@ public class GatewayResponseEncryptFilter implements GlobalFilter, Ordered {
 
             String encryptResult;
             String requestUri = exchange.getRequest().getURI().getPath();
+            String json = new String(jsonBytes);
             try {
-                String json = new String(jsonBytes);
                 encryptResult = ApiEncryptUtil.aesEncrypt(json, aesKey);
             } catch (Exception e) {
-                log.error("响应结果加密异常,requestUri:{}，json:{}, aesKey:{}", requestUri,
-                        jsonBytes, aesKey, e);
-                throw new ApiEncryptException();
+                throw new ApiEncryptException(requestUri, json, aesKey, e);
             }
             return encryptResult.getBytes(StandardCharsets.UTF_8);
 

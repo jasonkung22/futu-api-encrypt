@@ -8,30 +8,29 @@ import cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import java.io.IOException;
 import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 请求时间戳校验
  * @author Jason Kung
  * @date 2024/6/7 11:25
  */
-@Slf4j
 public class RequestApiTimestampVerifyFilter implements Filter {
 
     @Resource
     private ApiEncryptProperties apiEncryptProperty;
 
     @Override
-    @SneakyThrows
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
         HttpServletRequest req = (HttpServletRequest) request;
         String requestUri = req.getRequestURI();
 
@@ -49,14 +48,12 @@ public class RequestApiTimestampVerifyFilter implements Filter {
         String timestampStr = (String) req.getAttribute(ApiEncryptConstant.TIMES_TAMP);
 
         if (StrUtil.isBlankIfStr(timestampStr) || !StrUtil.isNumeric(timestampStr)) {
-            log.error("请求参数时间戳格式不正确,requestUri:{}, timestamp:{}", requestUri, timestampStr);
-            throw new ApiTimestampException();
+            throw new ApiTimestampException(requestUri, timestampStr);
         }
         long timestamp = Long.parseLong(timestampStr);
         if (DateUtil.between(new Date(timestamp), new Date(), DateUnit.SECOND)
                 > timestampVerify.getTimestampValidSecond()) {
-            log.error("请求参数时间戳校验失败,requestUri:{}, timestamp:{}", requestUri, timestamp);
-            throw new ApiTimestampException();
+            throw new ApiTimestampException(requestUri, timestampStr);
         }
 
         chain.doFilter(req, response);

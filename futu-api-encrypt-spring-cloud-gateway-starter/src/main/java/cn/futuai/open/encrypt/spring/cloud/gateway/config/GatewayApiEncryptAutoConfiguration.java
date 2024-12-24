@@ -1,5 +1,7 @@
 package cn.futuai.open.encrypt.spring.cloud.gateway.config;
 
+import cn.futuai.open.encrypt.core.log.ApiEncryptLogger;
+import cn.futuai.open.encrypt.core.log.DefaultApiEncryptLogger;
 import cn.futuai.open.encrypt.spring.cloud.gateway.config.property.GatewayApiEncryptProperties;
 import cn.futuai.open.encrypt.spring.cloud.gateway.exception.GatewayApiExceptionHandler;
 import cn.futuai.open.encrypt.spring.cloud.gateway.filter.request.GatewayRequestApiDecryptFilter;
@@ -31,19 +33,28 @@ public class GatewayApiEncryptAutoConfiguration {
 
     private final List<ViewResolver> viewResolvers;
     private final ServerCodecConfigurer serverCodecConfigurer;
+    private final GatewayApiEncryptProperties gatewayApiEncryptProperties;
 
     public GatewayApiEncryptAutoConfiguration(
             ObjectProvider<List<ViewResolver>> viewResolversProvider,
-            ServerCodecConfigurer serverCodecConfigurer) {
+            ServerCodecConfigurer serverCodecConfigurer,
+            GatewayApiEncryptProperties gatewayApiEncryptProperties) {
         this.viewResolvers = viewResolversProvider.getIfAvailable(Collections::emptyList);
         this.serverCodecConfigurer = serverCodecConfigurer;
+        this.gatewayApiEncryptProperties = gatewayApiEncryptProperties;
 
     }
 
     @Bean
+    @ConditionalOnMissingBean
+    public ApiEncryptLogger apiEncryptLogger() {
+        return new DefaultApiEncryptLogger(gatewayApiEncryptProperties);
+    }
+
+    @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
-    public GatewayApiExceptionHandler gatewayApiValidExceptionHandler() {
-        return new GatewayApiExceptionHandler(viewResolvers, serverCodecConfigurer);
+    public GatewayApiExceptionHandler gatewayApiValidExceptionHandler(ApiEncryptLogger apiEncryptLogger) {
+        return new GatewayApiExceptionHandler(viewResolvers, serverCodecConfigurer, apiEncryptLogger);
     }
 
     @Bean

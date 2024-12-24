@@ -10,8 +10,6 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import java.util.Date;
 import javax.annotation.Resource;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -24,14 +22,12 @@ import reactor.core.publisher.Mono;
  * @author Jason Kung
  * @date 2024/6/7 11:25
  */
-@Slf4j
 public class GatewayRequestApiTimestampVerifyFilter implements GlobalFilter, Ordered {
 
     @Resource
     private GatewayApiEncryptProperties gatewayApiEncryptProperty;
 
     @Override
-    @SneakyThrows
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String requestUri = request.getURI().getPath();
@@ -48,14 +44,12 @@ public class GatewayRequestApiTimestampVerifyFilter implements GlobalFilter, Ord
 
         String timestampStr = exchange.getAttribute(ApiEncryptConstant.TIMES_TAMP);
         if (StrUtil.isBlankIfStr(timestampStr) || !StrUtil.isNumeric(timestampStr)) {
-            log.error("请求参数时间戳格式不正确,requestUri:{}, timestamp:{}", requestUri, timestampStr);
-            throw new ApiTimestampException();
+            throw new ApiTimestampException(requestUri, timestampStr);
         }
         long timestamp = Long.parseLong(timestampStr);
         if (DateUtil.between(new Date(timestamp), new Date(), DateUnit.SECOND)
                 > timestampVerify.getTimestampValidSecond()) {
-            log.error("请求参数时间戳校验失败,requestUri:{}, timestamp:{}", requestUri, timestamp);
-            throw new ApiTimestampException();
+            throw new ApiTimestampException(requestUri, timestampStr);
         }
 
         return chain.filter(exchange);

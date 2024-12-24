@@ -14,16 +14,17 @@ import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 自定义request增强类
  * @author Jason Kung
  * @date 2024/08/05 15:29
  */
-@Slf4j
 public class HttpEncryptRequestWrapper extends HttpServletRequestWrapper {
 
+    private static final Logger log = LoggerFactory.getLogger(HttpEncryptRequestWrapper.class);
     /**
      * 保存request body的数据
      */

@@ -2,7 +2,6 @@ package cn.futuai.open.encrypt.spring.cloud.gateway.filter.request;
 
 import cn.futuai.open.encrypt.core.constants.ApiEncryptConstant;
 import cn.futuai.open.encrypt.core.exception.ApiDecryptException;
-import cn.futuai.open.encrypt.core.exception.ApiEncryptException;
 import cn.futuai.open.encrypt.core.property.RequestDecrypt;
 import cn.futuai.open.encrypt.core.util.ApiChecker;
 import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
@@ -13,8 +12,6 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import javax.annotation.Resource;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -30,7 +27,6 @@ import reactor.core.publisher.Mono;
  * @author Jason Kung
  * @date 2023/10/10 17:12
  */
-@Slf4j
 public class GatewayRequestApiDecryptFilter implements GlobalFilter, Ordered {
 
     @Resource
@@ -58,8 +54,7 @@ public class GatewayRequestApiDecryptFilter implements GlobalFilter, Ordered {
             String decryptRequestParam = decryptRequestParam(queryString, aesKey);
             updateRequestParam(exchange, decryptRequestParam);
         } catch (Exception e) {
-            log.error("解密请求参数异常,requestUri:{}, queryString:{}, aesKey:{}", requestUri, queryString, aesKey, e);
-            throw new ApiDecryptException();
+            throw new ApiDecryptException(requestUri, queryString, aesKey, e);
         }
 
         String orgBody = exchange.getAttribute(ApiEncryptConstant.ORG_BODY);
@@ -92,12 +87,11 @@ public class GatewayRequestApiDecryptFilter implements GlobalFilter, Ordered {
             }
             String decryptResult;
             String requestUri = exchange.getRequest().getURI().getPath();
+            String text = new String(bytes);
             try {
-                String text = new String(bytes);
                 decryptResult = ApiEncryptUtil.aesDecrypt(text, aesKey);
             } catch (Exception e) {
-                log.error("body参数解密异常,requestUri:{}，body:{}, aesKey:{}", requestUri, bytes, aesKey, e);
-                throw new ApiEncryptException();
+                throw new ApiDecryptException(requestUri, text, aesKey, e);
             }
             return decryptResult.getBytes(StandardCharsets.UTF_8);
         }
@@ -116,8 +110,7 @@ public class GatewayRequestApiDecryptFilter implements GlobalFilter, Ordered {
     /**
      * 修改前端传的参数
      */
-    @SneakyThrows
-    private void updateRequestParam(ServerWebExchange exchange, String param) {
+    private void updateRequestParam(ServerWebExchange exchange, String param) throws Exception {
         if (StrUtil.isBlank(param)) {
             return;
         }

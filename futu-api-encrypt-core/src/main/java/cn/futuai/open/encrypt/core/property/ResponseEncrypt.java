@@ -1,13 +1,11 @@
 package cn.futuai.open.encrypt.core.property;
 
-import lombok.Data;
 
 /**
  * ResponseEncrypt
  * @author Jason Kung
  * @date 2024/08/12 14:10
  */
-@Data
 public class ResponseEncrypt {
 
     /**
@@ -18,4 +16,20 @@ public class ResponseEncrypt {
      * 请求解密检查模式
      */
     private CheckModel checkModel = new CheckModel();
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public CheckModel getCheckModel() {
+        return checkModel;
+    }
+
+    public void setCheckModel(CheckModel checkModel) {
+        this.checkModel = checkModel;
+    }
 }

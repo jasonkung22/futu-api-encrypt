@@ -13,13 +13,12 @@ import java.nio.charset.StandardCharsets;
 import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 
 /**
@@ -27,15 +26,14 @@ import org.springframework.http.MediaType;
  * @author Jason Kung
  * @date 2023/10/10 17:12
  */
-@Slf4j
 public class ResponseEncryptFilter implements Filter {
 
     @Resource
     private ApiEncryptProperties apiEncryptProperty;
 
     @Override
-    @SneakyThrows
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
@@ -56,17 +54,17 @@ public class ResponseEncryptFilter implements Filter {
 
         chain.doFilter(req, responseWrapper);
 
-        try {
-            byte[] responseData = responseWrapper.getResponseData();
-            if (MediaType.APPLICATION_JSON_VALUE.equalsIgnoreCase(responseWrapper.getContentType().trim())) {
-                String aesKey = (String) request.getAttribute(ApiEncryptConstant.AES_KEY);
+        String aesKey = (String) request.getAttribute(ApiEncryptConstant.AES_KEY);
+        byte[] responseData = responseWrapper.getResponseData();
+        if (MediaType.APPLICATION_JSON_VALUE.equalsIgnoreCase(responseWrapper.getContentType().trim())) {
+            try {
                 responseData = encryptResponse(responseData, aesKey);
+            } catch (Exception e) {
+                throw new ApiEncryptException(requestUri, new String(responseData, StandardCharsets.UTF_8), aesKey, e);
             }
-            outPut(response, responseData);
-        } catch (Exception e) {
-            log.error("响应结果加密异常,requestUri:{}", requestUri, e);
-            throw new ApiEncryptException();
         }
+
+        outPut(response, responseData);
     }
 
     private void outPut(ServletResponse response, byte[] responseData) throws IOException {
@@ -83,7 +81,6 @@ public class ResponseEncryptFilter implements Filter {
         }
     }
 
-    @SneakyThrows
     public byte[] encryptResponse(byte[] responseData, String aesKey) {
         String responseBody = new String(responseData, StandardCharsets.UTF_8);
         if (StrUtil.isNotBlank(responseBody) && StrUtil.isNotBlank(aesKey)) {

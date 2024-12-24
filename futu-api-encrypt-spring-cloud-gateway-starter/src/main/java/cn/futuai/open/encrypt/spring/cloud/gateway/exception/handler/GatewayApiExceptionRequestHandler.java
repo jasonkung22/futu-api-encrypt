@@ -1,20 +1,6 @@
-/*
- * Copyright 1999-2019 Alibaba Group Holding Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package cn.futuai.open.encrypt.spring.cloud.gateway.exception.handler;
 
+import cn.futuai.open.encrypt.core.exception.handler.ApiExceptionRequestHandler;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -25,12 +11,12 @@ import reactor.core.publisher.Mono;
  * @date 2024/6/7 14:16
  */
 @FunctionalInterface
-public interface GatewayApiExceptionRequestHandler {
+public interface GatewayApiExceptionRequestHandler extends ApiExceptionRequestHandler {
 
     /**
-     * Handle the blocked request.
+     * Handle the api request.
      * @param exchange server exchange object
-     * @param t        block exception
+     * @param t        api exception
      * @return server response to return
      */
     Mono<ServerResponse> handleRequest(ServerWebExchange exchange, Throwable t);
