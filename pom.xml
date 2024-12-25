@@ -169,8 +169,8 @@
                                 <excludeArtifact>gateway</excludeArtifact>
                                 <excludeArtifact>user</excludeArtifact>
                                 <excludeArtifact>spring-boot-api-encrypt-example</excludeArtifact>
-                                <excludeArtifact>futu-api-encrypt-core</excludeArtifact>
                             </excludeArtifacts>
+                            <ignorePublishedComponents>true</ignorePublishedComponents>
                         </configuration>
                     </plugin>
                     <plugin>
