@@ -37,9 +37,15 @@ public class RequestApiSignVerifyFilter implements Filter {
             return;
         }
 
+        String encryptAesKey = req.getHeader(apiEncryptProperty.getEncryptAesKeyHeaderKey());
+        if (ApiChecker.isTolerantRequest(requestUri, apiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
+            chain.doFilter(req, response);
+            return;
+        }
+
         SignVerify signVerify = apiEncryptProperty.getSign();
         if (!signVerify.getEnabled()) {
-            chain.doFilter(request, response);
+            chain.doFilter(req, response);
             return;
         }
 

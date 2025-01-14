@@ -44,6 +44,13 @@ public class RequestApiDecryptFilter implements Filter {
             return;
         }
 
+        String encryptAesKey = req.getHeader(apiEncryptProperty.getEncryptAesKeyHeaderKey());
+        // 如果是容忍接口且没有加密key，则跳过解密
+        if (ApiChecker.isTolerantRequest(requestUri, apiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
+            chain.doFilter(req, resp);
+            return;
+        }
+
         RequestDecrypt requestDecrypt = apiEncryptProperty.getRequestDecrypt();
 
         if (ApiChecker.isPass(requestUri, requestDecrypt.getEnabled(), requestDecrypt.getCheckModel())) {

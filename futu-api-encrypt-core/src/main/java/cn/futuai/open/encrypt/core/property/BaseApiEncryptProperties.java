@@ -3,7 +3,9 @@ package cn.futuai.open.encrypt.core.property;
 import cn.futuai.open.encrypt.core.constants.enums.ApiEncryptLogLevelEnum;
 import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.hutool.core.util.StrUtil;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author Jason Kung
  * @date 2024/06/07 16:19
  */
+@SuppressWarnings("unused")
 public class BaseApiEncryptProperties {
 
     private static final Logger log = LoggerFactory.getLogger(BaseApiEncryptProperties.class);
@@ -25,6 +28,11 @@ public class BaseApiEncryptProperties {
      * RSA私钥
      */
     private String rsaPrivateKey = "";
+
+    /**
+     * 容忍接口列表
+     */
+    private List<String> tolerantUrls = new ArrayList<>();
 
     /**
      * 检查模式
@@ -178,5 +186,13 @@ public class BaseApiEncryptProperties {
 
     public void setLogLevel(Map<String, ApiEncryptLogLevelEnum> logLevel) {
         this.logLevel = logLevel;
+    }
+
+    public List<String> getTolerantUrls() {
+        return tolerantUrls;
+    }
+
+    public void setTolerantUrls(List<String> tolerantUrls) {
+        this.tolerantUrls = tolerantUrls;
     }
 }

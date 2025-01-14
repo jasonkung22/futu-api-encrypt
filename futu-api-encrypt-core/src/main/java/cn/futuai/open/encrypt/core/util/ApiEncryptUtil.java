@@ -1,11 +1,14 @@
 package cn.futuai.open.encrypt.core.util;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.Digester;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -60,5 +63,15 @@ public class ApiEncryptUtil {
     public static Boolean verifySign(String timestamp, String encryptKey, String queryString, String body,
             String sign) {
         return Objects.equals(sign(timestamp, encryptKey, queryString, body), sign);
+    }
+
+    /**
+     * 校验时间戳是否有效
+     * @param timestamp   时间戳
+     * @param validSecond 有效时间（秒）
+     * @return 是否有效
+     */
+    public static boolean isTimestampValid(long timestamp, long validSecond) {
+        return DateUtil.between(new Date(timestamp), new Date(), DateUnit.SECOND) <= validSecond;
     }
 }

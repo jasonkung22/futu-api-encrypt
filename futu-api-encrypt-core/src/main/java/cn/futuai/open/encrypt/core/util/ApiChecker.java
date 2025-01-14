@@ -31,7 +31,13 @@ public class ApiChecker {
         return isPass(requestUri, checkModel);
     }
 
-    private static boolean isMatchUrl(String url, List<String> urlList) {
+    /**
+     * 是否匹配URL
+     * @param url     URL
+     * @param urlList URL列表
+     * @return 是否匹配
+     */
+    public static boolean isMatchUrl(String url, List<String> urlList) {
         if (StrUtil.isEmpty(url)) {
             return false;
         }
@@ -47,6 +53,17 @@ public class ApiChecker {
         }
 
         return false;
+    }
+
+    /**
+     * 是否是容忍接口
+     * @param requestUri    请求标识符
+     * @param tolerantUrls  容忍接口列表
+     * @param encryptAesKey 加密key的值
+     * @return 是否是容忍接口且没有加密key
+     */
+    public static boolean isTolerantRequest(String requestUri, List<String> tolerantUrls, String encryptAesKey) {
+        return isMatchUrl(requestUri, tolerantUrls) && StrUtil.isBlank(encryptAesKey);
     }
 
     private static boolean isPass(String url, CheckModel checkModel) {

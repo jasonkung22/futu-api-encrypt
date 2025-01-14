@@ -177,6 +177,12 @@
       "type": "java.lang.Long",
       "description": "时间戳有效秒数",
       "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
+    },
+    {
+      "name": "spring.api-encrypt.tolerant-urls",
+      "type": "java.util.List<java.lang.String>",
+      "description": "容忍接口列表，当请求的URL在此列表中且没有加密key时，将跳过加密校验",
+      "sourceType": "cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties"
     }
   ],
   "hints": [

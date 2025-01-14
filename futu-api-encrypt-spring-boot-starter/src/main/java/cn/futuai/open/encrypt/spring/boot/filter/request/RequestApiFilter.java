@@ -48,6 +48,12 @@ public class RequestApiFilter implements Filter {
 
             String encryptAesKey = req.getHeader(apiEncryptProperty.getEncryptAesKeyHeaderKey());
 
+            // 如果是容忍接口且没有加密key，则跳过加密校验
+            if (ApiChecker.isTolerantRequest(requestUri, apiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
+                chain.doFilter(req, resp);
+                return;
+            }
+
             String sign = req.getHeader(apiEncryptProperty.getSignHeaderKey());
             if (StrUtil.isNotBlank(sign)) {
                 req.setAttribute(ApiEncryptConstant.SIGN, sign);

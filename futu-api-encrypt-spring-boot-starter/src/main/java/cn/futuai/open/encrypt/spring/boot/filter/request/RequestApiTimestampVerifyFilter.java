@@ -4,12 +4,10 @@ import cn.futuai.open.encrypt.core.constants.ApiEncryptConstant;
 import cn.futuai.open.encrypt.core.exception.ApiTimestampException;
 import cn.futuai.open.encrypt.core.property.TimestampVerify;
 import cn.futuai.open.encrypt.core.util.ApiChecker;
+import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties;
-import cn.hutool.core.date.DateUnit;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import java.io.IOException;
-import java.util.Date;
 import javax.annotation.Resource;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -39,9 +37,15 @@ public class RequestApiTimestampVerifyFilter implements Filter {
             return;
         }
 
+        String encryptAesKey = req.getHeader(apiEncryptProperty.getEncryptAesKeyHeaderKey());
+        if (ApiChecker.isTolerantRequest(requestUri, apiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
+            chain.doFilter(req, response);
+            return;
+        }
+
         TimestampVerify timestampVerify = apiEncryptProperty.getTimestamp();
         if (!timestampVerify.getEnabled()) {
-            chain.doFilter(request, response);
+            chain.doFilter(req, response);
             return;
         }
 
@@ -51,8 +55,7 @@ public class RequestApiTimestampVerifyFilter implements Filter {
             throw new ApiTimestampException(requestUri, timestampStr);
         }
         long timestamp = Long.parseLong(timestampStr);
-        if (DateUtil.between(new Date(timestamp), new Date(), DateUnit.SECOND)
-                > timestampVerify.getTimestampValidSecond()) {
+        if (!ApiEncryptUtil.isTimestampValid(timestamp, timestampVerify.getTimestampValidSecond())) {
             throw new ApiTimestampException(requestUri, timestampStr);
         }
 

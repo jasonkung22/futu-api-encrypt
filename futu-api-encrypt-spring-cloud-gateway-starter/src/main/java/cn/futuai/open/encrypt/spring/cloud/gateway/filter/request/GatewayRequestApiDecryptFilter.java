@@ -44,6 +44,12 @@ public class GatewayRequestApiDecryptFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
+        String encryptAesKey = request.getHeaders().getFirst(gatewayApiEncryptProperty.getEncryptAesKeyHeaderKey());
+        // 如果是容忍接口且没有加密key，则跳过解密
+        if (ApiChecker.isTolerantRequest(requestUri, gatewayApiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
+            return chain.filter(exchange);
+        }
+
         RequestDecrypt requestDecrypt = gatewayApiEncryptProperty.getRequestDecrypt();
         if (ApiChecker.isPass(requestUri, requestDecrypt.getEnabled(), requestDecrypt.getCheckModel())) {
             return chain.filter(exchange);

@@ -46,6 +46,12 @@ public class GatewayResponseEncryptFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
+        String encryptAesKey = request.getHeaders().getFirst(gatewayApiEncryptProperty.getEncryptAesKeyHeaderKey());
+        // 如果是容忍接口且没有加密key，则跳过加密
+        if (ApiChecker.isTolerantRequest(requestUri, gatewayApiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
+            return chain.filter(exchange);
+        }
+
         ResponseEncrypt responseEncrypt = gatewayApiEncryptProperty.getResponseEncrypt();
 
         if (ApiChecker.isPass(requestUri, responseEncrypt.getEnabled(), responseEncrypt.getCheckModel())) {
