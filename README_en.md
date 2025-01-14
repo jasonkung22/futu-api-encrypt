@@ -1,17 +1,21 @@
-中文 | [English](README_en.md)
+[中文](README.md) | English
 
-# 一、概述
+# I. Overview
 
-futu-api-encrypt是一款基于spring-boot和spring-cloud-gateway的接口加解密starter，通spring-boot的简单配置就能够实现各种业务场景下的接口参数校验和加解密。其中包含**时间戳**
-校验、**签名**校验、**对称加密**、**非对称加密**等多种功能，也能够根据**白名单**、**黑名单**配置过滤接口地址。同时支持**容忍模式**，可以灵活处理加密和非加密请求的共存场景。
+futu-api-encrypt is an API encryption/decryption starter based on spring-boot and spring-cloud-gateway. Through simple
+spring-boot configuration, it can implement interface parameter validation and encryption/decryption in various business
+scenarios. It includes features such as **timestamp** validation, **signature** verification, **symmetric encryption**
+, **asymmetric encryption**, and can filter interface addresses based on **whitelist** and **blacklist**. It also
+supports **Tolerant Mode** for flexible handling of both encrypted and non-encrypted requests.
 
-# 二、快速开始
+# II. Quick Start
 
-> 基于spring-cloud-gateway（spring-boot类似）
+> Based on spring-cloud-gateway (similar for spring-boot)
 
-### 1、引入依赖
+### 1. Add Dependency
 
 ```xml
+
 <dependency>
     <groupId>cn.futuai.open</groupId>
     <artifactId>futu-api-encrypt-spring-cloud-gateway-starter</artifactId>
@@ -19,28 +23,29 @@ futu-api-encrypt是一款基于spring-boot和spring-cloud-gateway的接口加解
 </dependency>
 ```
 
-### 2、配置参数
+### 2. Configuration Parameters
+
 ```yaml
 spring:
   cloud:
     gateway:
       api-encrypt:
-        # 全局开关
+        # Global switch
         enabled: true
-        # 加密对称密钥http header key
+        # Encryption symmetric key http header key
         encrypt-aes-key-header-key: "ek"
-        # 时间戳http header key
+        # Timestamp http header key
         timestamp-header-key: "ts"
-        # 签名值http header key
+        # Signature value http header key
         sign-header-key: "sign"
-        # 加密query参数key
+        # Encrypted query parameter key
         encrypt-param-key: "ciphertext"
-        # rsa非对称加密私钥
+        # RSA asymmetric encryption private key
         rsa-private-key: "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAI6VKvsus/Z0R3zvqre3gzClHJdsCVeKq89hZFFWbg5l3FNbiGZEEiuD1LL+USi5GCxeRK+xEOFTj7I/waRVb3x7V3J1N0q4nNWoZvRey0MTVaBkoHeB5tzn2ZOCBQRJnijXcO58ChcLXOTQId+zDiCBCom/A62gtH8isH4PYoZXAgMBAAECgYBpetrwNa223nDgcWFHRkCMZSmQr8D9fT37Th5rudfzWNG07RssJKGYhY9913xs9vl2IUsI+qH1P98nS9lSXE37mfOKFhfGZIUjAhMb7/w8hhuHpBXopVpUJZW0B46gfPOsrmvq+xiwlI02UYJ1ZOrfdfbvss/Gwtgrk4pMigL1OQJBANRm4mOUMwF+xUxeOLa2Aafke/iwdcxoV1k1gXmTH0B8wf08zDR7heW737YBEvsjyfEpjo7Y0kGSE5zmTWNnuKUCQQCr2XuZeJLqq6etq7IhboPAx8E2xgfOY/hgKPr9IvM8gYee628YhyOynIhOVFGxaf7dMH9eZ1P6jAbvsgm+mFZLAkEAyY0btJyTzg5q0G30aUTKy3OgRDvGfIJiqM+CHkiCdmIsfs5rhD3WsEqYHZBlX5T1cvgZQ+nxkrE4FUHhG7v31QJAYJZ9TNYjJTjTpt5A4V9/OAROCZ4mVw+DU3DVGR/ivJhFBMJpD80s+D/YsMXdoKzlraaLgCDtZ336jBByP6jZnwJBAIGUnbs7eRLcXzlbORdKC/EfkDYS2rrXLFvQhehT7Y8dKHLZfJElnrHB33Qd8R8WP0PsPU6D7EWNU2zVNK1EDxY="
-        # 容忍模式配置
+        # Tolerant mode configuration
         tolerant-urls:
-          - /api/public/**  # 允许公开接口同时支持加密和非加密访问
-          - /api/legacy/**  # 兼容旧版本接口
+          - /api/public/**  # Allow public APIs to support both encrypted and non-encrypted access
+          - /api/legacy/**  # Compatible with legacy versions
         log-level:
           "default": warn
           "[/api/user/code]": info
@@ -48,11 +53,11 @@ spring:
           "[/api/user/code3]": warn
           "[/api/user/code4]": error
           "[/api/user/export]": trace
-        # 检测模式
+        # Detection mode
         check-model:
-          # 模式
+          # Mode
           model: black_list
-          # 黑名单URL列表
+          # Blacklist URLs
           black-list:
             - /api/user/code
             - /api/user/code2
@@ -60,51 +65,54 @@ spring:
             - /api/user/code4
             - /api/user/export
         timestamp:
-          # 时间戳校验开关
+          # Timestamp validation switch
           enabled: true
-          # 时间戳有效秒数
-          timestamp-valid-second: 31536000 # 1年
+          # Timestamp valid seconds
+          timestamp-valid-second: 31536000 # 1 year
         sign:
-          # 签名校验开关
+          # Signature validation switch
           enabled: true
-        # 请求解密配置
+        # Request decryption configuration
         request-decrypt:
-          # 是否开启
+          # Enable switch
           enabled: true
-          # 检测模式
+          # Detection mode
           check-model:
-            # 白名单模式
+            # Whitelist mode
             model: white_list
-            # 白名单URL列表
+            # Whitelist URLs
             white-list:
               - /api/user/code2
               - /api/user/code4
-        # 响应加密配置
+        # Response encryption configuration
         response-encrypt:
-          # 是否开启
+          # Enable switch
           enabled: true
-          # 检测模式
+          # Detection mode
           check-model:
-            # 黑名单模式
+            # Blacklist mode
             model: black_list
-            # 黑名单URL列表
+            # Blacklist URLs
             black-list:
               - /api/user/code
               - /api/user/code4
               - /api/user/export
 ```
-### 3、自定义API异常回调管理器
+
+### 3. Custom API Exception Callback Manager
+
 ```java
+
 @Configuration
 public class ApiEncryptConfiguration {
 
     public ApiEncryptConfiguration() {
-        // 网关回调管理器
+        // Gateway callback manager
         GatewayApiExceptionCallbackManager.setApiExceptionHandler(new GatewayApiExceptionRequestHandler() {
             /**
-             * 网关API校验失败，就会调用此回调
+             * Called when gateway API validation fails
              * @param serverWebExchange serverWebExchange
-             * @param throwable 异常
+             * @param throwable exception
              * @return mono
              */
             @Override
@@ -120,36 +128,40 @@ public class ApiEncryptConfiguration {
 }
 ```
 
-### 4、容忍模式说明
+### 4. Tolerant Mode Description
 
-容忍模式（Tolerant Mode）是一个特殊的功能，允许特定的API接口同时支持加密和非加密的请求。这在以下场景特别有用：
+Tolerant Mode is a special feature that allows specific API endpoints to support both encrypted and non-encrypted
+requests simultaneously. This is particularly useful in the following scenarios:
 
-1. 接口平滑升级：当需要将现有的非加密接口升级为加密接口时，可以使用容忍模式实现平滑过渡
-2. 公开接口：某些公开接口可能既需要支持加密访问（如移动端），也需要支持非加密访问（如Web端）
-3. 向后兼容：为了兼容旧版本的客户端，可以让接口同时支持新旧两种访问方式
+1. Smooth API Upgrade: When upgrading existing non-encrypted APIs to encrypted ones, tolerant mode enables a smooth
+   transition
+2. Public APIs: Some public APIs may need to support both encrypted access (e.g., mobile clients) and non-encrypted
+   access (e.g., web clients)
+3. Backward Compatibility: To maintain compatibility with legacy clients, APIs can support both old and new access
+   methods
 
-使用方式：
+Usage:
 
-1. 在配置文件中通过 `tolerant-urls` 配置需要启用容忍模式的URL列表
-2. 支持通配符匹配，如 `/api/public/**`
-3. 当请求匹配到容忍模式的URL时：
-    - 如果请求带有加密头（encrypt-aes-key-header-key），则按加密请求处理
-    - 如果请求没有加密头，则按非加密请求处理
-    - 无论是否加密，都会执行时间戳和签名校验（如果启用）
+1. Configure URLs that need tolerant mode through `tolerant-urls` in the configuration file
+2. Supports wildcard matching, e.g., `/api/public/**`
+3. When a request matches a tolerant mode URL:
+    - If the request includes encryption header (encrypt-aes-key-header-key), it's processed as an encrypted request
+    - If the request doesn't include encryption header, it's processed as a non-encrypted request
+    - Timestamp and signature validation (if enabled) are performed regardless of encryption
 
-# 三、案例
+# III. Examples
 
-### 1、配置网关服务和用户服务
+### 1. Configure Gateway Service and User Service
 
-#### 网关服务：
+#### Gateway Service:
 
-- 引入futu-api-encrypt-spring-cloud-gateway-starter和nacos依赖
-- 参考“快速开始”配置API加解密规则
+- Import futu-api-encrypt-spring-cloud-gateway-starter and nacos dependencies
+- Configure API encryption rules as per "Quick Start"
 
-#### 用户服务
+#### User Service
 
-- 引入nacos等依赖
-- 定义API接口
+- Import nacos and other dependencies
+- Define API interface
 
 ```java
 
@@ -176,7 +188,7 @@ public class UserController {
     @GetMapping("export")
     public void export(HttpServletResponse response) {
         HttpHeaders headers = new HttpHeaders();
-        String name = "测试文件";
+        String name = "Test File";
 
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", UriUtils.encode(name, StandardCharsets.UTF_8) + ".xlsx");
@@ -191,33 +203,32 @@ public class UserController {
 }
 ```
 
-### 2、发起请求
+### 2. Make Requests
 
-#### 请求参数加密，响应结果加密，校验时间戳、签名
+#### Request Parameters Encrypted, Response Results Encrypted, Validate Timestamp and Signature
 
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1723463068571-469cbc39-1237-43d4-bdaa-e6495fd6efad.png#averageHue=%23fdfcfc&clientId=u0f345f74-d927-4&from=paste&height=618&id=ud0b94ff5&originHeight=618&originWidth=865&originalType=binary&ratio=1&rotation=0&showTitle=false&size=40216&status=done&style=none&taskId=u55edca16-0e37-4bf6-8a05-2c2a5006e39&title=&width=865)
 
-#### 请求参数不加密，响应结果不加密，校验时间戳、签名
+#### Request Parameters Not Encrypted, Response Results Not Encrypted, Validate Timestamp and Signature
 
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1718550690737-7e0c7c38-3250-48c3-ae6d-9714183a278d.png#averageHue=%23fdfdfd&clientId=uaf5e9763-0136-4&from=paste&height=853&id=u793141e2&originHeight=1279&originWidth=1257&originalType=binary&ratio=1.5&rotation=0&showTitle=false&size=67864&status=done&style=none&taskId=u61834138-13f9-4577-be79-f9aa7976526&title=&width=838)
 
-#### 请求参数加密，响应结果不加密，校验时间戳、签名
+#### Request Parameters Encrypted, Response Results Not Encrypted, Validate Timestamp and Signature
 
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1723463106346-988f417f-b577-4749-aafd-a2e33a07ed4f.png#averageHue=%23fdfdfd&clientId=u0f345f74-d927-4&from=paste&height=700&id=uca1ae20d&originHeight=700&originWidth=1004&originalType=binary&ratio=1&rotation=0&showTitle=false&size=46035&status=done&style=none&taskId=ubd0db2a7-836f-4800-afbc-f9ae711abe1&title=&width=1004)
 
-#### 请求参数不加密，响应结果加密，校验时间戳、签名
+#### Request Parameters Not Encrypted, Response Results Encrypted, Validate Timestamp and Signature
 
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1718550974052-0dae9688-6744-43c2-ac41-f104c232db5f.png#averageHue=%23fdfdfc&clientId=uaf5e9763-0136-4&from=paste&height=767&id=u6be91f79&originHeight=1151&originWidth=1644&originalType=binary&ratio=1.5&rotation=0&showTitle=false&size=73149&status=done&style=none&taskId=u0293497d-bdcd-4dab-8c0b-06958221d5d&title=&width=1096)
 
-#### 跳过所有检测
+#### Skip All Validations
 
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1718551122125-f8d16e65-c796-41ca-8c4e-625065c6dbf3.png#averageHue=%23fdfdfd&clientId=uaf5e9763-0136-4&from=paste&height=835&id=u3a8f089f&originHeight=1253&originWidth=2445&originalType=binary&ratio=1.5&rotation=0&showTitle=false&size=104682&status=done&style=none&taskId=u81683239-7942-490d-8fa8-fb9d8e4b443&title=&width=1630)
 
-#### 错误请求
+#### Error Request
 
 ![image.png](https://cdn.nlark.com/yuque/0/2024/png/1221070/1723464493419-40a6cdd2-7479-47c1-9bce-f60229f41e67.png#averageHue=%23fdfdfd&clientId=u0f345f74-d927-4&from=paste&height=649&id=u3d301b35&originHeight=649&originWidth=931&originalType=binary&ratio=1&rotation=0&showTitle=false&size=38983&status=done&style=none&taskId=uc566f878-8717-4f02-bf1b-31a2cd7f9fd&title=&width=931)
 
-# 四、原理解析
+# IV. Technical Analysis
 
-[API接口加解密技术方案（参考HTTPS原理和微信支付）](https://juejin.cn/post/7358368402795692082)
-
+[API Interface Encryption and Decryption Technical Solution (Referencing HTTPS Principles and WeChat Pay)](https://juejin.cn/post/7358368402795692082) 
