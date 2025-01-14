@@ -2,23 +2,20 @@ package cn.futuai.open.encrypt.spring.cloud.gateway.filter.response;
 
 import cn.futuai.open.encrypt.core.constants.ApiEncryptConstant;
 import cn.futuai.open.encrypt.core.exception.ApiEncryptException;
-import cn.futuai.open.encrypt.core.property.ResponseEncrypt;
 import cn.futuai.open.encrypt.core.util.ApiChecker;
 import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.futuai.open.encrypt.spring.cloud.gateway.config.property.GatewayApiEncryptProperties;
+import cn.futuai.open.encrypt.spring.cloud.gateway.filter.AbstractGatewayFilter;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import java.nio.charset.StandardCharsets;
 import javax.annotation.Resource;
 import org.reactivestreams.Publisher;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.cloud.gateway.filter.NettyWriteResponseFilter;
 import org.springframework.cloud.gateway.filter.factory.rewrite.ModifyResponseBodyGatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.factory.rewrite.RewriteFunction;
-import org.springframework.core.Ordered;
 import org.springframework.http.MediaType;
-import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -27,8 +24,7 @@ import reactor.core.publisher.Mono;
  * @author Jason Kung
  * @date 2023/10/10 17:12
  */
-public class GatewayResponseEncryptFilter implements GlobalFilter, Ordered {
-
+public class GatewayResponseEncryptFilter extends AbstractGatewayFilter {
 
     @Resource
     private ModifyResponseBodyGatewayFilterFactory encryptFilterFactory;
@@ -37,24 +33,17 @@ public class GatewayResponseEncryptFilter implements GlobalFilter, Ordered {
     private GatewayApiEncryptProperties gatewayApiEncryptProperty;
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        ServerHttpRequest request = exchange.getRequest();
-        String requestUri = request.getURI().getPath();
+    protected GatewayApiEncryptProperties getGatewayApiEncryptProperty() {
+        return gatewayApiEncryptProperty;
+    }
 
-        if (ApiChecker.isPass(requestUri, gatewayApiEncryptProperty.getEnabled(),
-                gatewayApiEncryptProperty.getCheckModel())) {
-            return chain.filter(exchange);
-        }
+    @Override
+    protected Mono<Void> doFilterInternal(ServerWebExchange exchange, GatewayFilterChain chain) {
+        String requestUri = exchange.getRequest().getURI().getPath();
 
-        String encryptAesKey = request.getHeaders().getFirst(gatewayApiEncryptProperty.getEncryptAesKeyHeaderKey());
-        // 如果是容忍接口且没有加密key，则跳过加密
-        if (ApiChecker.isTolerantRequest(requestUri, gatewayApiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
-            return chain.filter(exchange);
-        }
-
-        ResponseEncrypt responseEncrypt = gatewayApiEncryptProperty.getResponseEncrypt();
-
-        if (ApiChecker.isPass(requestUri, responseEncrypt.getEnabled(), responseEncrypt.getCheckModel())) {
+        // 检查是否在加密接口列表中
+        if (ApiChecker.isPass(requestUri, gatewayApiEncryptProperty.getResponseEncrypt().getEnabled(),
+                gatewayApiEncryptProperty.getResponseEncrypt().getCheckModel())) {
             return chain.filter(exchange);
         }
 
@@ -93,8 +82,6 @@ public class GatewayResponseEncryptFilter implements GlobalFilter, Ordered {
                 throw new ApiEncryptException(requestUri, json, aesKey, e);
             }
             return encryptResult.getBytes(StandardCharsets.UTF_8);
-
         }
     }
-
 }

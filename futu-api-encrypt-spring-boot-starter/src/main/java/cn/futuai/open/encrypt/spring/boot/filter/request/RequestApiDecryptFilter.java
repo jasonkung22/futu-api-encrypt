@@ -7,50 +7,44 @@ import cn.futuai.open.encrypt.core.property.RequestDecrypt;
 import cn.futuai.open.encrypt.core.util.ApiChecker;
 import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties;
+import cn.futuai.open.encrypt.spring.boot.filter.AbstractApiFilter;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Resource;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * 请求解密过滤器
+ * 主要职责：
+ * 1. 解密请求参数
+ * 2. 解密请求体
+ * 3. 更新请求参数
+ * 4. 参数安全校验
  * @author Jason Kung
  * @date 2023/10/10 17:12
  */
-public class RequestApiDecryptFilter implements Filter {
+public class RequestApiDecryptFilter extends AbstractApiFilter {
 
     @Resource
     private ApiEncryptProperties apiEncryptProperty;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
+    protected ApiEncryptProperties getApiEncryptProperty() {
+        return apiEncryptProperty;
+    }
 
+    @Override
+    protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain chain)
+            throws ServletException, IOException {
         String requestUri = req.getRequestURI();
 
-        if (ApiChecker.isPass(requestUri, apiEncryptProperty.getEnabled(), apiEncryptProperty.getCheckModel())) {
-            chain.doFilter(req, resp);
-            return;
-        }
-
-        String encryptAesKey = req.getHeader(apiEncryptProperty.getEncryptAesKeyHeaderKey());
-        // 如果是容忍接口且没有加密key，则跳过解密
-        if (ApiChecker.isTolerantRequest(requestUri, apiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
-            chain.doFilter(req, resp);
-            return;
-        }
-
+        // 检查是否在解密接口列表中
         RequestDecrypt requestDecrypt = apiEncryptProperty.getRequestDecrypt();
 
         if (ApiChecker.isPass(requestUri, requestDecrypt.getEnabled(), requestDecrypt.getCheckModel())) {
@@ -106,7 +100,9 @@ public class RequestApiDecryptFilter implements Filter {
     }
 
     /**
-     * 修改前端传的参数
+     * 更新请求参数
+     * @param request 请求包装器
+     * @param param   解密后的参数Map
      */
     private void updateRequestParam(HttpEncryptRequestWrapper request, Map<String, String> param) {
         if (CollectionUtil.isEmpty(param)) {
@@ -115,5 +111,4 @@ public class RequestApiDecryptFilter implements Filter {
 
         request.setParameter(param);
     }
-
 }

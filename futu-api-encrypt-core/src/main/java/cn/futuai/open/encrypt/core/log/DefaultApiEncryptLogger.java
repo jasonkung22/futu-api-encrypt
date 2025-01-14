@@ -97,7 +97,7 @@ public class DefaultApiEncryptLogger implements ApiEncryptLogger {
                 break;
             case WARN:
             default:
-                log.warn(format, arguments, ArrayUtil.append(arguments, ex));
+                log.warn(format, ArrayUtil.append(arguments, ex));
                 break;
         }
     }

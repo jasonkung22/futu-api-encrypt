@@ -2,14 +2,13 @@ package cn.futuai.open.encrypt.spring.cloud.gateway.filter.request;
 
 import cn.futuai.open.encrypt.core.constants.ApiEncryptConstant;
 import cn.futuai.open.encrypt.core.exception.ApiDecryptException;
-import cn.futuai.open.encrypt.core.util.ApiChecker;
 import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.futuai.open.encrypt.spring.cloud.gateway.config.property.GatewayApiEncryptProperties;
+import cn.futuai.open.encrypt.spring.cloud.gateway.filter.AbstractGatewayFilter;
 import cn.hutool.core.util.StrUtil;
 import java.nio.charset.StandardCharsets;
 import javax.annotation.Resource;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferUtils;
@@ -23,33 +22,29 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * api接口校验和解密过滤器
+ * API接口校验和解密过滤器
+ * 作为入口过滤器，主要负责：
+ * 1. 提取和设置请求相关的属性（签名、时间戳、请求参数等）
+ * 2. 解密AES密钥
+ * 3. 统一的异常处理
  * @author Jason Kung
  * @date 2024/06/08 14:28
  */
 @SuppressWarnings("NullableProblems")
-public class GatewayRequestApiFilter implements GlobalFilter, Ordered {
+public class GatewayRequestApiFilter extends AbstractGatewayFilter {
 
     @Resource
     private GatewayApiEncryptProperties gatewayApiEncryptProperty;
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    protected GatewayApiEncryptProperties getGatewayApiEncryptProperty() {
+        return gatewayApiEncryptProperty;
+    }
 
+    @Override
+    protected Mono<Void> doFilterInternal(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         String requestUri = request.getURI().getPath();
-
-        if (ApiChecker.isPass(requestUri, gatewayApiEncryptProperty.getEnabled(),
-                gatewayApiEncryptProperty.getCheckModel())) {
-            return chain.filter(exchange);
-        }
-
-        String encryptAesKey = request.getHeaders().getFirst(gatewayApiEncryptProperty.getEncryptAesKeyHeaderKey());
-
-        // 如果是容忍接口且没有加密key，则跳过加密校验
-        if (ApiChecker.isTolerantRequest(requestUri, gatewayApiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
-            return chain.filter(exchange);
-        }
 
         String sign = request.getHeaders().getFirst(gatewayApiEncryptProperty.getSignHeaderKey());
         if (StrUtil.isNotBlank(sign)) {
@@ -64,6 +59,7 @@ public class GatewayRequestApiFilter implements GlobalFilter, Ordered {
             exchange.getAttributes().put(ApiEncryptConstant.ORG_QUERY_STRING, orgQueryString);
         }
 
+        String encryptAesKey = request.getHeaders().getFirst(gatewayApiEncryptProperty.getEncryptAesKeyHeaderKey());
         if (StrUtil.isNotBlank(encryptAesKey)) {
             try {
                 String aseKey = ApiEncryptUtil.rsaDecrypt(encryptAesKey);

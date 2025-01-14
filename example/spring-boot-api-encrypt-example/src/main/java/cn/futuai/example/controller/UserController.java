@@ -58,7 +58,7 @@ public class UserController {
         }
 
         IOUtils.copy(new FileInputStream(
-                        "D:\\project\\personal\\gateway-api-encrypt\\example\\gateway-api-encrypt-example\\doc\\测试.xlsx"),
+                        "D:\\project\\personal\\gateway-api-encrypt\\example\\doc\\测试.xlsx"),
                 response.getOutputStream());
     }
 }

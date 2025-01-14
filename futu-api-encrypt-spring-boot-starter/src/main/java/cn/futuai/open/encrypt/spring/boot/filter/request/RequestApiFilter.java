@@ -4,30 +4,30 @@ import cn.futuai.open.encrypt.core.HttpEncryptRequestWrapper;
 import cn.futuai.open.encrypt.core.constants.ApiEncryptConstant;
 import cn.futuai.open.encrypt.core.exception.ApiBaseException;
 import cn.futuai.open.encrypt.core.exception.ApiDecryptException;
-import cn.futuai.open.encrypt.core.util.ApiChecker;
 import cn.futuai.open.encrypt.core.util.ApiEncryptUtil;
 import cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties;
 import cn.futuai.open.encrypt.spring.boot.exception.ApiExceptionHandler;
+import cn.futuai.open.encrypt.spring.boot.filter.AbstractApiFilter;
 import cn.hutool.core.util.StrUtil;
 import java.io.IOException;
 import java.util.Objects;
 import javax.annotation.Resource;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
 
 /**
- * api接口校验和解密过滤器
+ * API接口校验和解密过滤器
+ * 作为入口过滤器，主要负责：
+ * 1. 提取和设置请求相关的属性（签名、时间戳、请求参数等）
+ * 2. 解密AES密钥
+ * 3. 统一的异常处理
  * @author Jason Kung
  * @date 2024/06/08 14:28
  */
-public class RequestApiFilter implements Filter {
-
+public class RequestApiFilter extends AbstractApiFilter {
 
     @Resource
     private ApiEncryptProperties apiEncryptProperty;
@@ -35,60 +35,51 @@ public class RequestApiFilter implements Filter {
     private ApiExceptionHandler apiExceptionHandler;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    protected ApiEncryptProperties getApiEncryptProperty() {
+        return apiEncryptProperty;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        HttpServletResponse resp = (HttpServletResponse) response;
         try {
-            String requestUri = req.getRequestURI();
-            if (ApiChecker.isPass(requestUri, apiEncryptProperty.getEnabled(), apiEncryptProperty.getCheckModel())) {
-                chain.doFilter(req, resp);
-                return;
-            }
-
-            String encryptAesKey = req.getHeader(apiEncryptProperty.getEncryptAesKeyHeaderKey());
-
-            // 如果是容忍接口且没有加密key，则跳过加密校验
-            if (ApiChecker.isTolerantRequest(requestUri, apiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
-                chain.doFilter(req, resp);
-                return;
-            }
-
-            String sign = req.getHeader(apiEncryptProperty.getSignHeaderKey());
+            String requestUri = request.getRequestURI();
+            String sign = request.getHeader(apiEncryptProperty.getSignHeaderKey());
             if (StrUtil.isNotBlank(sign)) {
-                req.setAttribute(ApiEncryptConstant.SIGN, sign);
+                request.setAttribute(ApiEncryptConstant.SIGN, sign);
             }
-            String timestamp = req.getHeader(apiEncryptProperty.getTimestampHeaderKey());
+            String timestamp = request.getHeader(apiEncryptProperty.getTimestampHeaderKey());
             if (StrUtil.isNotBlank(timestamp)) {
-                req.setAttribute(ApiEncryptConstant.TIMES_TAMP, timestamp);
+                request.setAttribute(ApiEncryptConstant.TIMES_TAMP, timestamp);
             }
-            String orgQueryString = req.getQueryString();
+            String orgQueryString = request.getQueryString();
             if (StrUtil.isNotBlank(orgQueryString)) {
-                req.setAttribute(ApiEncryptConstant.ORG_QUERY_STRING, orgQueryString);
+                request.setAttribute(ApiEncryptConstant.ORG_QUERY_STRING, orgQueryString);
             }
 
+            String encryptAesKey = request.getHeader(apiEncryptProperty.getEncryptAesKeyHeaderKey());
             if (StrUtil.isNotBlank(encryptAesKey)) {
                 try {
                     String aseKey = ApiEncryptUtil.rsaDecrypt(encryptAesKey);
-                    req.setAttribute(ApiEncryptConstant.AES_KEY, aseKey);
+                    request.setAttribute(ApiEncryptConstant.AES_KEY, aseKey);
                 } catch (Exception e) {
                     throw new ApiDecryptException(requestUri, encryptAesKey, "", e);
                 }
             }
 
-            if (Objects.equals(req.getMethod(), HttpMethod.GET.name())) {
-                chain.doFilter(req, resp);
+            if (Objects.equals(request.getMethod(), HttpMethod.GET.name())) {
+                chain.doFilter(request, response);
                 return;
             }
 
-            HttpEncryptRequestWrapper requestWrapper = new HttpEncryptRequestWrapper(req);
+            HttpEncryptRequestWrapper requestWrapper = new HttpEncryptRequestWrapper(request);
             String body = requestWrapper.getBody();
             if (StrUtil.isNotBlank(body)) {
                 requestWrapper.setAttribute(ApiEncryptConstant.ORG_BODY, body);
             }
-            chain.doFilter(requestWrapper, resp);
+            chain.doFilter(requestWrapper, response);
         } catch (ApiBaseException e) {
-            apiExceptionHandler.apiExceptionHandler(req, resp, e);
+            apiExceptionHandler.apiExceptionHandler(request, response, e);
         }
     }
 }
