@@ -13,6 +13,6 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
         with:
           # 注意替换为你的 GitHub 源仓库地址
-          source-repo: git@github.com:jasonkung22/futu-api-encrypt.git
+          source-repo: https://github.com/jasonkung22/futu-api-encrypt.git
           # 注意替换为你的 Gitee 目标仓库地址
           destination-repo: git@gitee.com:AJiong22/futu-api-encrypt.git
