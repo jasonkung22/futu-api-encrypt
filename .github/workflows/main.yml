@@ -10,7 +10,7 @@ jobs:
         uses: wearerequired/git-mirror-action@master
         env:
           # 注意在 Settings->Secrets 配置 company_ledear
-          SSH_PRIVATE_KEY: ${{ secrets.company_ledear }}
+          SSH_PRIVATE_KEY: ${{ secrets.GITEE_RSA_PRIVATE_KEY }}
         with:
           # 注意替换为你的 GitHub 源仓库地址
           source-repo: git@github.com:jasonkung22/futu-api-encrypt.git
