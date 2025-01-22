@@ -15,7 +15,7 @@ futu-api-encrypt是一款基于spring-boot和spring-cloud-gateway的接口加解
 <dependency>
     <groupId>cn.futuai.open</groupId>
     <artifactId>futu-api-encrypt-spring-cloud-gateway-starter</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
 </dependency>
 ```
 

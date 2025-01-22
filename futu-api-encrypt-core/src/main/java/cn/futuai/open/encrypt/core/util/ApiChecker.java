@@ -5,6 +5,8 @@ import cn.futuai.open.encrypt.core.property.CheckModel.CheckModelEnum;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.AntPathMatcher;
 
 /**
@@ -15,6 +17,7 @@ import org.springframework.util.AntPathMatcher;
 public class ApiChecker {
 
     private final static AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
+    private static final Logger log = LoggerFactory.getLogger(ApiChecker.class);
 
     /**
      * 是否通过
@@ -63,7 +66,19 @@ public class ApiChecker {
      * @return 是否是容忍接口且没有加密key
      */
     public static boolean isTolerantRequest(String requestUri, List<String> tolerantUrls, String encryptAesKey) {
-        return isMatchUrl(requestUri, tolerantUrls) && StrUtil.isBlank(encryptAesKey);
+        boolean isMatchTolerantUrl = isMatchUrl(requestUri, tolerantUrls);
+        boolean isBlankAesKey = StrUtil.isBlank(encryptAesKey);
+        boolean isTolerant = isMatchTolerantUrl && isBlankAesKey;
+
+        if (isTolerant) {
+            log.info("Tolerant mode check passed - Request URI: {}, Matched tolerant URLs: {}, No encryption key",
+                    requestUri, tolerantUrls);
+        } else if (isMatchTolerantUrl) {
+            log.debug("Tolerant URL matched but contains encryption key - Request URI: {}, Encryption key: {}",
+                    requestUri, encryptAesKey);
+        }
+
+        return isTolerant;
     }
 
     private static boolean isPass(String url, CheckModel checkModel) {
