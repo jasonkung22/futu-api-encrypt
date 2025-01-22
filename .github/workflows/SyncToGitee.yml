@@ -3,7 +3,7 @@ name: Sync To Gitee
 on: [ push, delete, create ]
 
 jobs:
-  build:
+  git-mirror:
     runs-on: ubuntu-latest
     steps:
       - name: Sync to Gitee
