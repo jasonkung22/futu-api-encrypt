@@ -30,6 +30,6 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.GITEE_SSH_PRIVATE_KEY }}
         with:
           # 显式指定 source 和 destination
-          source: "https://github.com/jasonkung22/futu-api-encrypt.git"
+          source-repo: "https://github.com/jasonkung22/futu-api-encrypt.git"
           # 目标仓库的 SSH 地址（格式：git@gitee.com:用户名/仓库名.git）
-          destination: "git@gitee.com:AJiong22/futu-api-encrypt.git"
+          destination-repo: "git@gitee.com:AJiong22/futu-api-encrypt.git"
