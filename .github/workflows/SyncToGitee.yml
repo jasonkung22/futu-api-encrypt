@@ -2,21 +2,28 @@ name: Sync to Gitee
 
 on:
   push:
-    branches: [ master ]  # 监听 master 分支的推送（可改为其他分支）
-  workflow_dispatch:    # 可选：允许手动触发同步
+    branches: [ master ]  # 监听 main 分支的推送
+  workflow_dispatch:    # 可选：手动触发
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
+      # 检出 GitHub 代码
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Sync to Gitee
-        uses: repo-sync/github-sync@v2
+      # 配置 Git 身份（避免权限问题）
+      - name: Setup Git Identity
+        run: |
+          git config --global user.name "JasonKung22"
+          git config --global user.email "704210402@qq.com"
+
+      # 同步到 Gitee（使用已验证的 Action）
+      - name: Mirror to Gitee
+        uses: wearerequired/git-mirror-action@master
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.GITEE_SSH_PRIVATE_KEY }}
         with:
-          source_repo: "origin"
-          source_branch: "master"
-          destination_repo: "git@gitee.com:AJiong22/futu-api-encrypt.git"
-          destination_branch: "master"
-          ssh_private_key: ${{ secrets.GITEE_SSH_PRIVATE_KEY }}
+          # 目标仓库的 SSH 地址（格式：git@gitee.com:用户名/仓库名.git）
+          destination-repo: "git@gitee.com:AJiong22/futu-api-encrypt.git"
