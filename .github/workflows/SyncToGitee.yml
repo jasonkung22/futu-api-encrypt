@@ -16,7 +16,7 @@ jobs:
       # 配置 Git 身份（避免权限问题）
       - name: Setup Git Identity
         run: |
-          git config --global user.name "JasonKung22"
+          git config --global user.name "AJiong22"
           git config --global user.email "704210402@qq.com"
 
       # 同步到 Gitee（使用已验证的 Action）
