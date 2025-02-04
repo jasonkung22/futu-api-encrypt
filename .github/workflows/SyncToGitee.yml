@@ -12,12 +12,16 @@ jobs:
       # 检出 GitHub 代码
       - name: Checkout Code
         uses: actions/checkout@v4
+        # 关键：解决安全目录问题
+        with:
+          persist-credentials: false
 
       # 配置 Git 身份（避免权限问题）
       - name: Setup Git Identity
         run: |
           git config --global user.name "AJiong22"
           git config --global user.email "704210402@qq.com"
+          git config --global --add safe.directory /github/workspace
 
       # 同步到 Gitee（使用已验证的 Action）
       - name: Mirror to Gitee
@@ -25,5 +29,7 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.GITEE_SSH_PRIVATE_KEY }}
         with:
+          # 显式指定 source 和 destination
+          source: "https://github.com/jasonkung22/futu-api-encrypt.git"
           # 目标仓库的 SSH 地址（格式：git@gitee.com:用户名/仓库名.git）
           destination: "git@gitee.com:AJiong22/futu-api-encrypt.git"
