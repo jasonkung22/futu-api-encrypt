@@ -15,7 +15,7 @@ futu-api-encrypt是一款基于spring-boot和spring-cloud-gateway的接口加解
 <dependency>
     <groupId>cn.futuai.open</groupId>
     <artifactId>futu-api-encrypt-spring-cloud-gateway-starter</artifactId>
-    <version>1.3.1</version>
+    <version>1.3.2</version>
 </dependency>
 ```
 
@@ -144,7 +144,7 @@ public class ApiEncryptConfiguration {
 #### 网关服务：
 
 - 引入futu-api-encrypt-spring-cloud-gateway-starter和nacos依赖
-- 参考“快速开始”配置API加解密规则
+- 参考"快速开始"配置API加解密规则
 
 #### 用户服务
 

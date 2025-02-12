@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.2] - 2025-02-12
+
+### 新特性
+
+1. 增强 HttpEncryptRequestWrapper 功能
+    - 新增 getParameterNames 方法支持
+    - 提升与 Spring MVC 的兼容性
+    - 优化请求参数处理机制
+
+### 优化改进
+
+1. 优化 CI/CD 流程
+    - 完善 GitHub 到 Gitee 的同步机制
+    - 更新 GitHub Actions 配置
+    - 优化代码同步策略
+
+### 升级建议
+
+1. 从1.3.1升级到1.3.2版本包含功能增强，建议按需升级
+2. 如果您的系统依赖 getParameterNames 方法，推荐升级到此版本
+
 ## [1.3.1] - 2025-01-16
 
 ### 优化改进
