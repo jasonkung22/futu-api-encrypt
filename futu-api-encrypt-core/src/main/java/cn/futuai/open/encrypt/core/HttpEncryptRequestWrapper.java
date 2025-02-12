@@ -130,6 +130,11 @@ public class HttpEncryptRequestWrapper extends HttpServletRequestWrapper {
     }
 
     @Override
+    public Enumeration<String> getParameterNames() {
+        return Collections.enumeration(paramMap.keySet());
+    }
+
+    @Override
     public String[] getParameterValues(String name) {
         if (paramMap.containsKey(name)) {
             return new String[]{getParameter(name)};
