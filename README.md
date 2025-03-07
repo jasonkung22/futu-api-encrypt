@@ -15,7 +15,7 @@ futu-api-encrypt是一款基于spring-boot和spring-cloud-gateway的接口加解
 <dependency>
     <groupId>cn.futuai.open</groupId>
     <artifactId>futu-api-encrypt-spring-cloud-gateway-starter</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
 </dependency>
 ```
 
@@ -133,9 +133,8 @@ public class ApiEncryptConfiguration {
 1. 在配置文件中通过 `tolerant-urls` 配置需要启用容忍模式的URL列表
 2. 支持通配符匹配，如 `/api/public/**`
 3. 当请求匹配到容忍模式的URL时：
-    - 如果请求带有加密头（encrypt-aes-key-header-key），则按加密请求处理
+    - 如果请求带有加密头，则按加密请求处理
     - 如果请求没有加密头，则按非加密请求处理
-    - 无论是否加密，都会执行时间戳和签名校验（如果启用）
 
 # 三、案例
 

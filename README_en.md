@@ -18,7 +18,7 @@ supports **Tolerant Mode** for flexible handling of both encrypted and non-encry
 <dependency>
     <groupId>cn.futuai.open</groupId>
     <artifactId>futu-api-encrypt-spring-cloud-gateway-starter</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
 </dependency>
 ```
 
@@ -144,9 +144,8 @@ Usage:
 1. Configure URLs that need tolerant mode through `tolerant-urls` in the configuration file
 2. Supports wildcard matching, e.g., `/api/public/**`
 3. When a request matches a tolerant mode URL:
-    - If the request includes encryption header (encrypt-aes-key-header-key), it's processed as an encrypted request
+    - If the request includes encryption header, it's processed as an encrypted request
     - If the request doesn't include encryption header, it's processed as a non-encrypted request
-    - Timestamp and signature validation (if enabled) are performed regardless of encryption
 
 # III. Examples
 

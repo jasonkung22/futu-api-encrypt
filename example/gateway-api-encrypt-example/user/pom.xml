@@ -5,7 +5,7 @@
     <parent>
         <groupId>cn.futuai.open</groupId>
         <artifactId>gateway-api-encrypt-example</artifactId>
-        <version>1.3.2</version>
+        <version>1.3.3</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
