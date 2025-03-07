@@ -44,9 +44,19 @@ public abstract class AbstractGatewayFilter implements GlobalFilter, Ordered {
         }
 
         // 容忍模式检查
-        String encryptAesKey = exchange.getRequest().getHeaders()
-                .getFirst(gatewayApiEncryptProperty.getEncryptAesKeyHeaderKey());
-        if (ApiChecker.isTolerantRequest(requestUri, gatewayApiEncryptProperty.getTolerantUrls(), encryptAesKey)) {
+        // 先从请求属性中获取容忍模式判断结果
+        Boolean isTolerantRequest = exchange.getAttribute(ApiChecker.TOLERANT_REQUEST_ATTRIBUTE);
+
+        // 如果请求属性中没有判断结果，执行判断并存入请求属性
+        if (isTolerantRequest == null) {
+            String encryptAesKey = exchange.getRequest().getHeaders()
+                    .getFirst(gatewayApiEncryptProperty.getEncryptAesKeyHeaderKey());
+            isTolerantRequest = ApiChecker.isTolerantRequest(requestUri, 
+                    gatewayApiEncryptProperty.getTolerantUrls(), encryptAesKey);
+            exchange.getAttributes().put(ApiChecker.TOLERANT_REQUEST_ATTRIBUTE, isTolerantRequest);
+        }
+        
+        if (isTolerantRequest) {
             return chain.filter(exchange);
         }
 

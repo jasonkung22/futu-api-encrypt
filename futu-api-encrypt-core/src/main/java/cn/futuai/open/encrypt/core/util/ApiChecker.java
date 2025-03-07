@@ -18,6 +18,11 @@ public class ApiChecker {
 
     private final static AntPathMatcher ANT_PATH_MATCHER = new AntPathMatcher();
     private static final Logger log = LoggerFactory.getLogger(ApiChecker.class);
+    
+    /**
+     * 容忍模式属性键名
+     */
+    public static final String TOLERANT_REQUEST_ATTRIBUTE = "api_encrypt_tolerant_request";
 
     /**
      * 是否通过
@@ -66,10 +71,12 @@ public class ApiChecker {
      * @return 是否是容忍接口且没有加密key
      */
     public static boolean isTolerantRequest(String requestUri, List<String> tolerantUrls, String encryptAesKey) {
+        // 执行判断逻辑
         boolean isMatchTolerantUrl = isMatchUrl(requestUri, tolerantUrls);
         boolean isBlankAesKey = StrUtil.isBlank(encryptAesKey);
         boolean isTolerant = isMatchTolerantUrl && isBlankAesKey;
 
+        // 判断后记录日志
         if (isTolerant) {
             log.info("Tolerant mode check passed - Request URI: {}, Matched tolerant URLs: {}, No encryption key",
                     requestUri, tolerantUrls);
@@ -77,7 +84,7 @@ public class ApiChecker {
             log.debug("Tolerant URL matched but contains encryption key - Request URI: {}, Encryption key: {}",
                     requestUri, encryptAesKey);
         }
-
+        
         return isTolerant;
     }
 

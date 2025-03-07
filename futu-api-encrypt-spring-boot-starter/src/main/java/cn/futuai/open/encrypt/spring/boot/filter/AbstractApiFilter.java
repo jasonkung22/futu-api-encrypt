@@ -55,8 +55,18 @@ public abstract class AbstractApiFilter implements Filter {
         }
 
         // 容忍模式检查
-        String encryptAesKey = req.getHeader(getApiEncryptProperty().getEncryptAesKeyHeaderKey());
-        if (ApiChecker.isTolerantRequest(requestUri, getApiEncryptProperty().getTolerantUrls(), encryptAesKey)) {
+        // 先从请求属性中获取容忍模式判断结果
+        Boolean isTolerantRequest = (Boolean) req.getAttribute(ApiChecker.TOLERANT_REQUEST_ATTRIBUTE);
+        
+        // 如果请求属性中没有判断结果，执行判断并存入请求属性
+        if (isTolerantRequest == null) {
+            String encryptAesKey = req.getHeader(getApiEncryptProperty().getEncryptAesKeyHeaderKey());
+            isTolerantRequest = ApiChecker.isTolerantRequest(requestUri, 
+                    getApiEncryptProperty().getTolerantUrls(), encryptAesKey);
+            req.setAttribute(ApiChecker.TOLERANT_REQUEST_ATTRIBUTE, isTolerantRequest);
+        }
+        
+        if (isTolerantRequest) {
             chain.doFilter(req, resp);
             return;
         }
