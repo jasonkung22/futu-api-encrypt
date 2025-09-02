@@ -9,7 +9,9 @@ import cn.futuai.open.encrypt.spring.boot.config.property.ApiEncryptProperties;
 import cn.futuai.open.encrypt.spring.boot.exception.ApiExceptionHandler;
 import cn.futuai.open.encrypt.spring.boot.filter.AbstractApiFilter;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Objects;
 import javax.annotation.Resource;
 import javax.servlet.FilterChain;
@@ -54,6 +56,7 @@ public class RequestApiFilter extends AbstractApiFilter {
             }
             String orgQueryString = request.getQueryString();
             if (StrUtil.isNotBlank(orgQueryString)) {
+                orgQueryString = urlDecode(orgQueryString);
                 request.setAttribute(ApiEncryptConstant.ORG_QUERY_STRING, orgQueryString);
             }
 
@@ -81,5 +84,19 @@ public class RequestApiFilter extends AbstractApiFilter {
         } catch (ApiBaseException e) {
             apiExceptionHandler.apiExceptionHandler(request, response, e);
         }
+    }
+
+    public String urlDecode(String url) {
+        if (url == null) {
+            return null;
+        }
+        int n = url.length();
+        if (n == 0) {
+            return url;
+        }
+        if (url.indexOf('%') < 0) {
+            return url;
+        }
+        return URLUtil.decode(url, Charset.defaultCharset());
     }
 }
