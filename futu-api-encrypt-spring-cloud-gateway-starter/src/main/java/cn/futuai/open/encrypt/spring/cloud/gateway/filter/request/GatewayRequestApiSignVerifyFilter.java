@@ -36,7 +36,7 @@ public class GatewayRequestApiSignVerifyFilter extends AbstractGatewayFilter {
         String orgBody = exchange.getAttribute(ApiEncryptConstant.ORG_BODY);
 
         if (!ApiEncryptUtil.verifySign(timestamp, aesKey, orgQueryString, orgBody, sign)) {
-            throw new ApiSignException(requestUri, timestamp, aesKey, orgQueryString, orgBody);
+            throw new ApiSignException(requestUri, timestamp, aesKey, orgQueryString, orgBody, sign);
         }
         return chain.filter(exchange);
     }

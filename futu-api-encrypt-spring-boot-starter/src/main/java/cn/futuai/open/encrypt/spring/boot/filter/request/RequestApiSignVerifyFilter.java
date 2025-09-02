@@ -38,7 +38,7 @@ public class RequestApiSignVerifyFilter extends AbstractApiFilter {
         String orgBody = (String) request.getAttribute(ApiEncryptConstant.ORG_BODY);
 
         if (!ApiEncryptUtil.verifySign(timestamp, aesKey, orgQueryString, orgBody, sign)) {
-            throw new ApiSignException(requestUri, timestamp, aesKey, orgQueryString, orgBody);
+            throw new ApiSignException(requestUri, timestamp, aesKey, orgQueryString, orgBody, sign);
         }
         chain.doFilter(request, response);
     }

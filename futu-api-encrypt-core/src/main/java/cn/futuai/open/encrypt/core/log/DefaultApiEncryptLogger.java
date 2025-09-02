@@ -43,10 +43,10 @@ public class DefaultApiEncryptLogger implements ApiEncryptLogger {
         } else if (ex instanceof ApiSignException) {
             ApiSignException apiSignException = (ApiSignException) ex;
             log(apiSignException.getRequestUri(), ex,
-                    "api sign exception, requestUri:{}, timestamp:{}, aesKey:{}, orgQueryString:{}, orgBody:{}",
+                    "api sign exception, requestUri:{}, timestamp:{}, aesKey:{}, orgQueryString:{}, orgBody:{}, sign:{}",
                     apiSignException.getRequestUri(),
                     apiSignException.getTimestamp(), apiSignException.getAesKey(), apiSignException.getOrgQueryString(),
-                    apiSignException.getOrgBody());
+                    apiSignException.getOrgBody(), apiSignException.getSign());
         } else if (ex instanceof ApiDecryptException) {
             ApiDecryptException apiDecryptException = (ApiDecryptException) ex;
             log(apiDecryptException.getRequestUri(), ex, "api decrypt exception, requestUri:{}, param:{}, aesKey:{}",

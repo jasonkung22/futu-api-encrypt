@@ -27,14 +27,20 @@ public class ApiSignException extends ApiBaseException {
      * 原始body
      */
     private String orgBody;
+    /**
+     * 签名
+     */
+    private String sign;
 
-    public ApiSignException(String requestUri, String timestamp, String aesKey, String orgQueryString, String orgBody) {
+    public ApiSignException(String requestUri, String timestamp, String aesKey, String orgQueryString, String orgBody,
+            String sign) {
         super("api sign exception");
         this.requestUri = requestUri;
         this.timestamp = timestamp;
         this.aesKey = aesKey;
         this.orgQueryString = orgQueryString;
         this.orgBody = orgBody;
+        this.sign = sign;
     }
 
     public String getRequestUri() {
@@ -75,5 +81,13 @@ public class ApiSignException extends ApiBaseException {
 
     public void setOrgBody(String orgBody) {
         this.orgBody = orgBody;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
     }
 }
