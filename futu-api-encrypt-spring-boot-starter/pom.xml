@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>futu-api-encrypt-spring-boot-starter</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
 
     <description>futu-api-encrypt-spring-boot-starter is a starter built upon SpringBoot that introduces API encryption
         and decryption capabilities. It enables the completion of API encryption and decryption functions based on
