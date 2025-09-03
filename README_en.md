@@ -18,7 +18,7 @@ supports **Tolerant Mode** for flexible handling of both encrypted and non-encry
 <dependency>
     <groupId>cn.futuai.open</groupId>
     <artifactId>futu-api-encrypt-spring-cloud-gateway-starter</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
 </dependency>
 ```
 

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.4] - 2025-09-02
+
+### 优化改进
+
+1. 修复spring-boot-starter GET请求参数解码问题
+2. 优化签名失败日志输出
+
+### 升级建议
+
+1. 从1.3.3升级到1.3.4版本仅包含内部优化，可以直接升级
+2. 此版本改进了spring-boot-starter，推荐所有使用spring-boot-starter的用户升级
+
 ## [1.3.3] - 2025-03-07
 
 ### 优化改进
